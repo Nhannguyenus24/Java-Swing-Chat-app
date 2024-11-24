@@ -19,14 +19,21 @@
         <dependency>
             <groupId>org.jfree</groupId>
             <artifactId>jfreechart</artifactId>
-            <version>1.5.3</version> <!-- Kiểm tra phiên bản mới nhất -->
+            <version>1.5.3</version>
         </dependency>
         <!-- JCommon, một thư viện phụ trợ cho JFreeChart -->
         <dependency>
             <groupId>org.jfree</groupId>
             <artifactId>jcommon</artifactId>
-            <version>1.0.24</version> <!-- Kiểm tra phiên bản mới nhất -->
+            <version>1.0.24</version>
         </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.33</version>
+        </dependency>
+
     </dependencies>
 
 </project>

@@ -3,10 +3,10 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.sql.*;
 
 public class ActiveUserPanel extends JPanel {
     private JTable activeUserTable;
@@ -22,20 +22,7 @@ public class ActiveUserPanel extends JPanel {
         setLayout(new BorderLayout());
 
         String[] columns = { "Tên đăng nhập", "Hoạt động", "Số nhóm tham gia", "Thời gian hoạt động" };
-        Object[][] data = {
-                { "knight", "The Dream Nail", 10, "2024-11-01 14:30" },
-                { "hornet", "Needle Strike", 8, "2024-11-10 09:15" },
-                { "shroomy", "Spore Shot", 5, "2024-11-12 17:45" },
-                { "grimm", "Nightmare Flames", 7, "2024-11-03 11:00" },
-                { "quirrel", "Lake Watch", 4, "2024-11-05 13:15" },
-                { "zote", "Hopeless Heroics", 3, "2024-11-07 18:00" },
-                { "seer", "Whispering Roots", 6, "2024-11-08 20:30" },
-                { "cloth", "Brave Sacrifice", 5, "2024-11-09 15:45" },
-                { "tiso", "Arena Challenge", 4, "2024-11-11 12:15" },
-                { "nailsmith", "Forging Mastery", 9, "2024-11-13 17:50" }
-        };
-
-        model = new DefaultTableModel(data, columns) {
+        model = new DefaultTableModel(columns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -70,20 +57,10 @@ public class ActiveUserPanel extends JPanel {
 
         add(filterPanel, BorderLayout.NORTH);
 
-        filterNameButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                filterTableByName(filterNameField.getText());
-            }
-        });
+        filterNameButton.addActionListener(e -> filterTableByName(filterNameField.getText()));
 
-        filterCountButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                filterTableByActivityCount(comparisonBox.getSelectedItem().toString(),
-                        filterActivityCountField.getText());
-            }
-        });
+        filterCountButton.addActionListener(e -> filterTableByActivityCount(comparisonBox.getSelectedItem().toString(),
+                filterActivityCountField.getText()));
 
         JPanel datePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         datePanel.add(new JLabel("Từ ngày (yyyy-MM-dd HH:mm): "));
@@ -96,14 +73,36 @@ public class ActiveUserPanel extends JPanel {
         datePanel.add(filterDateButton);
         add(datePanel, BorderLayout.SOUTH);
 
-        filterDateButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                filterTableByDateRange(startDateField.getText(), endDateField.getText());
-            }
-        });
+        filterDateButton.addActionListener(e -> filterTableByDateRange(startDateField.getText(), endDateField.getText()));
+
+        loadActiveUserDataFromDatabase(); // Load active user data from the database
     }
 
+    // Hàm lấy dữ liệu người dùng từ cơ sở dữ liệu
+    private void loadActiveUserDataFromDatabase() {
+        String sql = "SELECT user_id, activity_id, activity_count, activity_date FROM user_activity ORDER BY activity_date DESC";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            model.setRowCount(0); // Clear existing rows
+
+            while (rs.next()) {
+                String user_id = rs.getString("user_id");
+                String activity_id = rs.getString("activity_id");
+                int groupCount = rs.getInt("activity_count");
+                String activityTime = rs.getString("activity_date");
+
+                model.addRow(new Object[]{user_id, activity_id, groupCount, activityTime});
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Lỗi khi tải dữ liệu người dùng từ cơ sở dữ liệu.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    // Hàm lọc theo tên
     private void filterTableByName(String query) {
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
         activeUserTable.setRowSorter(sorter);
@@ -114,6 +113,7 @@ public class ActiveUserPanel extends JPanel {
         }
     }
 
+    // Hàm lọc theo thời gian
     private void filterTableByDateRange(String start, String end) {
         try {
             Date startDate = start.isEmpty() ? null : dateFormat.parse(start);
@@ -144,6 +144,7 @@ public class ActiveUserPanel extends JPanel {
         }
     }
 
+    // Hàm lọc theo số nhóm tham gia
     private void filterTableByActivityCount(String comparison, String value) {
         try {
             int threshold = Integer.parseInt(value);
@@ -153,7 +154,7 @@ public class ActiveUserPanel extends JPanel {
             sorter.setRowFilter(new RowFilter<DefaultTableModel, Integer>() {
                 @Override
                 public boolean include(Entry<? extends DefaultTableModel, ? extends Integer> entry) {
-                    int activityCount = Integer.parseInt(entry.getStringValue(1));
+                    int activityCount = Integer.parseInt(entry.getStringValue(2));
                     switch (comparison) {
                         case "=":
                             return activityCount == threshold;

@@ -3,6 +3,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.sql.*;
+import java.util.ArrayList;
 
 public class GroupChatPanel extends JPanel {
     private JTable groupChatTable;
@@ -27,8 +29,22 @@ public class GroupChatPanel extends JPanel {
 
         JPanel actionPanel = createActionPanel();
         add(actionPanel, BorderLayout.SOUTH);
+
+        loadGroupChatDataFromDatabase(); // Load group chat data from the database
     }
 
+    // Hàm tạo DefaultTableModel
+    private DefaultTableModel createTableModel() {
+        String[] columns = { "Tên nhóm", "Thời gian tạo" };
+        return new DefaultTableModel(columns, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Cột không thể chỉnh sửa
+            }
+        };
+    }
+
+    // Hàm tạo panel tìm kiếm
     private JPanel createSearchPanel() {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         panel.add(new JLabel("Tìm nhóm:"));
@@ -42,29 +58,7 @@ public class GroupChatPanel extends JPanel {
         return panel;
     }
 
-    private DefaultTableModel createTableModel() {
-        String[] columns = { "Tên nhóm", "Thời gian tạo" };
-        Object[][] data = {
-                { "Hollow Knight", "2024-11-01 10:00:00" },
-                { "Silksong", "2024-10-20 14:30:00" },
-                { "The Great Five Knight", "2024-11-12 09:00:00" },
-                { "Isma's Grove", "2024-11-02 10:30:00" },
-                { "Dryya's Stand", "2024-11-04 14:00:00" },
-                { "Hegemol's Watch", "2024-11-06 16:00:00" },
-                { "Ogrim's Valor", "2024-11-10 19:15:00" },
-                { "Ze'mer's Lament", "2024-11-14 12:30:00" },
-                { "Knight's Ascent", "2024-11-08 15:20:00" },
-                { "Hornet's Trial", "2024-11-05 18:45:00" },
-        };
-
-        return new DefaultTableModel(data, columns) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-    }
-
+    // Hàm tạo panel hành động
     private JPanel createActionPanel() {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JButton viewMembersButton = new JButton("Xem thành viên");
@@ -78,6 +72,7 @@ public class GroupChatPanel extends JPanel {
         return panel;
     }
 
+    // Hàm lọc bảng theo từ khóa tìm kiếm
     private void filterTable(String query) {
         if (query.trim().isEmpty()) {
             sorter.setRowFilter(null);
@@ -86,6 +81,29 @@ public class GroupChatPanel extends JPanel {
         }
     }
 
+    // Hàm lấy dữ liệu nhóm từ cơ sở dữ liệu
+    private void loadGroupChatDataFromDatabase() {
+        String sql = "SELECT group_name, created_at FROM `groups` ORDER BY created_at DESC";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            model.setRowCount(0); // Clear existing rows
+
+            while (rs.next()) {
+                String groupName = rs.getString("group_name");
+                String createdAt = rs.getString("created_at");
+
+                model.addRow(new Object[]{groupName, createdAt});
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Lỗi khi tải dữ liệu nhóm từ cơ sở dữ liệu.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    // Hàm xem thành viên của nhóm
     private void viewMembersAction(ActionEvent e) {
         int selectedRow = groupChatTable.getSelectedRow();
         if (selectedRow != -1) {
@@ -96,6 +114,7 @@ public class GroupChatPanel extends JPanel {
         }
     }
 
+    // Hàm xem admin của nhóm
     private void viewAdminsAction(ActionEvent e) {
         int selectedRow = groupChatTable.getSelectedRow();
         if (selectedRow != -1) {

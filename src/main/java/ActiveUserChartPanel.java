@@ -1,3 +1,4 @@
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -9,6 +10,7 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.chart.plot.PlotOrientation;
 
+import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,13 +23,11 @@ public class ActiveUserChartPanel extends JPanel {
         setLayout(new BorderLayout());
 
         yearlyData = new HashMap<>();
-        yearlyData.put("2023", new int[] { 5, 8, 12, 15, 18, 20, 25, 30, 28, 22, 17, 10 });
-        yearlyData.put("2024", new int[] { 8, 15, 20, 22, 25, 28, 30, 32, 35, 30, 25, 18 });
 
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         topPanel.add(new JLabel("Chọn năm: "));
 
-        yearSelector = new JComboBox<>(yearlyData.keySet().toArray(new String[0]));
+        yearSelector = new JComboBox<>(getAvailableYears());
         topPanel.add(yearSelector);
         JButton showChartButton = new JButton("Hiển thị biểu đồ");
         topPanel.add(showChartButton);
@@ -51,15 +51,60 @@ public class ActiveUserChartPanel extends JPanel {
         updateChart((String) yearSelector.getSelectedItem());
     }
 
+    // Hàm lấy các năm có dữ liệu từ cơ sở dữ liệu
+    private String[] getAvailableYears() {
+        // Kết nối cơ sở dữ liệu để lấy các năm có dữ liệu
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement("SELECT DISTINCT YEAR(activity_date) FROM user_activity");
+             ResultSet rs = stmt.executeQuery()) {
+
+            // Lưu các năm vào một danh sách
+            Map<String, Integer> years = new HashMap<>();
+            while (rs.next()) {
+                years.put(rs.getString(1), 1);
+            }
+            return years.keySet().toArray(new String[0]);
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Lỗi khi truy vấn dữ liệu từ cơ sở dữ liệu.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return new String[0];
+        }
+    }
+
+    // Hàm lấy dữ liệu cho biểu đồ từ cơ sở dữ liệu
     private void updateChart(String year) {
         dataset.clear();
-        if (yearlyData.containsKey(year)) {
-            int[] data = yearlyData.get(year);
-            String[] months = { "Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
-                    "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12" };
-            for (int i = 0; i < months.length; i++) {
-                dataset.addValue(data[i], months[i], year);
-            }
+        int[] monthlyData = getMonthlyData(year);
+        String[] months = { "Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+                "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12" };
+
+        for (int i = 0; i < months.length; i++) {
+            dataset.addValue(monthlyData[i], months[i], year);
         }
+    }
+
+    // Hàm lấy số lượng người dùng hoạt động mỗi tháng trong năm từ cơ sở dữ liệu
+    private int[] getMonthlyData(String year) {
+        int[] data = new int[12];
+        String sql = "SELECT MONTH(activity_date), COUNT(*) FROM user_activity " +
+                "WHERE YEAR(activity_date) = ? GROUP BY MONTH(activity_date) ORDER BY MONTH(activity_date)";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, year);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    int month = rs.getInt(1) - 1;  // Tháng trong cơ sở dữ liệu bắt đầu từ 1, trong mảng bắt đầu từ 0
+                    data[month] = rs.getInt(2);
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Lỗi khi truy vấn dữ liệu từ cơ sở dữ liệu.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+
+        return data;
     }
 }

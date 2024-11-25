@@ -1,6 +1,7 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.sql.*;
 
 public class LoginHistoryPanel extends JPanel {
     private JTable loginHistoryTable;
@@ -14,28 +15,41 @@ public class LoginHistoryPanel extends JPanel {
         loginHistoryTable.setAutoCreateRowSorter(true);
 
         add(new JScrollPane(loginHistoryTable), BorderLayout.CENTER);
+
+        loadLoginHistoryFromDatabase(); // Load login history from database
     }
 
+    // Hàm tạo DefaultTableModel
     private DefaultTableModel createTableModel() {
         String[] columns = {"Thời gian", "Tên đăng nhập", "Họ tên"};
-        Object[][] data = {
-                {"2024-11-15 08:00:00", "hollow_knight", "Hollow Knight"},
-                {"2024-11-15 09:15:00", "silksong", "Silksong"},
-                {"2024-11-14 17:30:00", "sealed_vessel", "Sealed Vessel"},
-                {"2024-11-13 11:45:00", "isma_grove", "Isma's Grove"},
-                {"2024-11-12 14:20:00", "dryya_stand", "Dryya's Stand"},
-                {"2024-11-11 16:10:00", "hegemol_watch", "Hegemol's Watch"},
-                {"2024-11-10 19:30:00", "ogrim_valor", "Ogrim's Valor"},
-                {"2024-11-09 13:00:00", "zemer_lament", "Ze'mer's Lament"},
-                {"2024-11-08 09:50:00", "knight_ascent", "Knight's Ascent"},
-                {"2024-11-07 15:40:00", "hornet_trial", "Hornet's Trial"},
-        };
-
-        return new DefaultTableModel(data, columns) {
+        return new DefaultTableModel(columns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; 
+                return false; // Cột không thể chỉnh sửa
             }
         };
+    }
+
+    // Hàm lấy dữ liệu lịch sử đăng nhập từ cơ sở dữ liệu
+    private void loadLoginHistoryFromDatabase() {
+        String sql = "SELECT login_time, user_id, history_id FROM login_history ORDER BY login_time DESC";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            model.setRowCount(0); // Clear existing rows
+
+            while (rs.next()) {
+                String loginTime = rs.getString("login_time");
+                String user_id = rs.getString("user_id");
+                String fullName = rs.getString("history_id");
+
+                model.addRow(new Object[]{loginTime, user_id, fullName});
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Lỗi khi tải lịch sử đăng nhập từ cơ sở dữ liệu.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }

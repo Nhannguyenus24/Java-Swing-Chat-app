@@ -1,11 +1,12 @@
 import javax.swing.*;
 
-public class AdminDashboard extends JFrame {
+public class AdminDashboard {
 
     public AdminDashboard() {
-        this.setTitle("Phân hệ dành cho người quản trị");
-        this.setSize(960, 540);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JFrame frame = new JFrame();
+        frame.setTitle("Phân hệ dành cho người quản trị");
+        frame.setSize(960, 540);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.addTab("Quản lý người dùng", new UserManagementPanel());
@@ -17,8 +18,8 @@ public class AdminDashboard extends JFrame {
         tabbedPane.addTab("Danh sách bạn bè", new UserFriendListPanel());
         tabbedPane.addTab("Người dùng hoạt động", new ActiveUserPanel());
         tabbedPane.addTab("Biểu đồ người hoạt động", new ActiveUserChartPanel());
-        this.add(tabbedPane);
-        this.setVisible(true);
+        frame.add(tabbedPane);
+        frame.setVisible(true);
     }
 
     public static void main(String[] args) {

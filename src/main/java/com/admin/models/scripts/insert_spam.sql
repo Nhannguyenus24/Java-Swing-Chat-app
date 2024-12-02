@@ -1,0 +1,22 @@
+INSERT INTO `Spam_Reports` (`user_id`, `report_time`, `reason`)
+VALUES
+    (1, NOW(), 'Spam message'), (2, NOW() - INTERVAL 15 DAY, 'Inappropriate content'),
+    (3, NOW() - INTERVAL 25 DAY, 'Harassment'), (4, NOW() - INTERVAL 35 DAY, 'Offensive language'),
+    (5, NOW() - INTERVAL 45 DAY, 'Spam message'), (6, NOW() - INTERVAL 55 DAY, 'Inappropriate content'),
+    (7, NOW() - INTERVAL 65 DAY, 'Harassment'), (8, NOW() - INTERVAL 75 DAY, 'Offensive language'),
+    (9, NOW() - INTERVAL 85 DAY, 'Spam message'), (10, NOW() - INTERVAL 95 DAY, 'Inappropriate content'),
+    (11, NOW() - INTERVAL 105 DAY, 'Harassment'), (12, NOW() - INTERVAL 115 DAY, 'Offensive language'),
+    (13, NOW() - INTERVAL 125 DAY, 'Spam message'), (14, NOW() - INTERVAL 135 DAY, 'Inappropriate content'),
+    (15, NOW() - INTERVAL 145 DAY, 'Harassment'), (16, NOW() - INTERVAL 155 DAY, 'Offensive language'),
+    (17, NOW() - INTERVAL 165 DAY, 'Spam message'), (18, NOW() - INTERVAL 175 DAY, 'Inappropriate content'),
+    (19, NOW() - INTERVAL 185 DAY, 'Harassment'), (20, NOW() - INTERVAL 195 DAY, 'Offensive language'),
+    (21, NOW() - INTERVAL 205 DAY, 'Spam message'), (22, NOW() - INTERVAL 215 DAY, 'Inappropriate content'),
+    (23, NOW() - INTERVAL 225 DAY, 'Harassment'), (24, NOW() - INTERVAL 235 DAY, 'Offensive language'),
+    (25, NOW() - INTERVAL 245 DAY, 'Spam message'), (26, NOW() - INTERVAL 255 DAY, 'Inappropriate content'),
+    (27, NOW() - INTERVAL 265 DAY, 'Harassment'), (28, NOW() - INTERVAL 275 DAY, 'Offensive language'),
+    (29, NOW() - INTERVAL 285 DAY, 'Spam message'), (30, NOW() - INTERVAL 295 DAY, 'Inappropriate content'),
+    (31, NOW() - INTERVAL 305 DAY, 'Harassment'), (32, NOW() - INTERVAL 315 DAY, 'Offensive language'),
+    (33, NOW() - INTERVAL 325 DAY, 'Spam message'), (34, NOW() - INTERVAL 335 DAY, 'Inappropriate content'),
+    (35, NOW() - INTERVAL 345 DAY, 'Harassment'), (36, NOW() - INTERVAL 355 DAY, 'Offensive language'),
+    (37, NOW() - INTERVAL 365 DAY, 'Spam message'), (38, NOW() - INTERVAL 375 DAY, 'Inappropriate content'),
+    (39, NOW() - INTERVAL 385 DAY, 'Harassment'), (40, NOW() - INTERVAL 395 DAY, 'Offensive language');

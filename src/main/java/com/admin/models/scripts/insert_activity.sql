@@ -1,0 +1,22 @@
+INSERT INTO `User_Activity` (`user_id`, `activity_type`, `activity_count`, `activity_date`)
+VALUES
+    (1, 'App Open', 5, NOW()), (2, 'Chat', 10, NOW() - INTERVAL 15 DAY), 
+    (3, 'Group Join', 1, NOW() - INTERVAL 25 DAY), (4, 'App Open', 3, NOW() - INTERVAL 35 DAY),
+    (5, 'Chat', 8, NOW() - INTERVAL 45 DAY), (6, 'Group Join', 2, NOW() - INTERVAL 55 DAY),
+    (7, 'App Open', 7, NOW() - INTERVAL 65 DAY), (8, 'Chat', 5, NOW() - INTERVAL 75 DAY),
+    (9, 'Group Join', 1, NOW() - INTERVAL 85 DAY), (10, 'App Open', 4, NOW() - INTERVAL 95 DAY),
+    (11, 'Chat', 3, NOW() - INTERVAL 105 DAY), (12, 'Group Join', 2, NOW() - INTERVAL 115 DAY),
+    (13, 'App Open', 6, NOW() - INTERVAL 125 DAY), (14, 'Chat', 12, NOW() - INTERVAL 135 DAY),
+    (15, 'Group Join', 1, NOW() - INTERVAL 145 DAY), (16, 'App Open', 9, NOW() - INTERVAL 155 DAY),
+    (17, 'Chat', 7, NOW() - INTERVAL 165 DAY), (18, 'Group Join', 3, NOW() - INTERVAL 175 DAY),
+    (19, 'App Open', 10, NOW() - INTERVAL 185 DAY), (20, 'Chat', 2, NOW() - INTERVAL 195 DAY),
+    (21, 'Group Join', 1, NOW() - INTERVAL 205 DAY), (22, 'App Open', 5, NOW() - INTERVAL 215 DAY),
+    (23, 'Chat', 9, NOW() - INTERVAL 225 DAY), (24, 'Group Join', 1, NOW() - INTERVAL 235 DAY),
+    (25, 'App Open', 7, NOW() - INTERVAL 245 DAY), (26, 'Chat', 11, NOW() - INTERVAL 255 DAY),
+    (27, 'Group Join', 2, NOW() - INTERVAL 265 DAY), (28, 'App Open', 6, NOW() - INTERVAL 275 DAY),
+    (29, 'Chat', 4, NOW() - INTERVAL 285 DAY), (30, 'Group Join', 1, NOW() - INTERVAL 295 DAY),
+    (31, 'App Open', 8, NOW() - INTERVAL 305 DAY), (32, 'Chat', 6, NOW() - INTERVAL 315 DAY),
+    (33, 'Group Join', 2, NOW() - INTERVAL 325 DAY), (34, 'App Open', 5, NOW() - INTERVAL 335 DAY),
+    (35, 'Chat', 3, NOW() - INTERVAL 345 DAY), (36, 'Group Join', 1, NOW() - INTERVAL 355 DAY),
+    (37, 'App Open', 9, NOW() - INTERVAL 365 DAY), (38, 'Chat', 10, NOW() - INTERVAL 375 DAY),
+    (39, 'Group Join', 2, NOW() - INTERVAL 385 DAY), (40, 'App Open', 11, NOW() - INTERVAL 395 DAY);

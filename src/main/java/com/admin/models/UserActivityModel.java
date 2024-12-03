@@ -14,6 +14,10 @@ public class UserActivityModel {
                     SELECT
                         u.username,
                         u.full_name,
+                        u.created_at,
+                        COUNT(CASE WHEN ua.activity_type = 'app open' THEN 1 END) AS app_open_count,
+                        COUNT(CASE WHEN ua.activity_type = 'chat' THEN 1 END) AS chat_count,
+                        COUNT(CASE WHEN ua.activity_type = 'group join' THEN 1 END) AS group_join_count,
                         COUNT(DISTINCT ua.activity_id) AS total_activities
                     FROM User u
                     LEFT JOIN User_Activity ua ON u.user_id = ua.user_id
@@ -28,7 +32,10 @@ public class UserActivityModel {
             while (rs.next()) {
                 userActivities.add(new Object[] {
                         rs.getString("username"),
-                        rs.getString("full_name"),
+                        rs.getTimestamp("created_at"),
+                        rs.getInt("app_open_count"),
+                        rs.getInt("chat_count"),
+                        rs.getInt("group_join_count"),
                         rs.getInt("total_activities")
                 });
             }
@@ -45,6 +52,10 @@ public class UserActivityModel {
                     SELECT
                         u.username,
                         u.full_name,
+                        u.created_at,
+                        COUNT(CASE WHEN ua.activity_type = 'app open' THEN 1 END) AS app_open_count,
+                        COUNT(CASE WHEN ua.activity_type = 'chat' THEN 1 END) AS chat_count,
+                        COUNT(CASE WHEN ua.activity_type = 'group join' THEN 1 END) AS group_join_count,
                         COUNT(DISTINCT ua.activity_id) AS total_activities
                     FROM User u
                     LEFT JOIN User_Activity ua ON u.user_id = ua.user_id
@@ -53,14 +64,18 @@ public class UserActivityModel {
                 """;
 
         String sql = baseSql;
-        if (comparison.equals("=")) {
-            sql += " HAVING total_activities = ?";
-        } else if (comparison.equals("<")) {
-            sql += " HAVING total_activities < ?";
-        } else if (comparison.equals(">")) {
-            sql += " HAVING total_activities > ?";
-        } else {
-            throw new IllegalArgumentException("Invalid comparison operator: " + comparison);
+        switch (comparison) {
+            case "=":
+                sql += " HAVING total_activities = ?";
+                break;
+            case "<":
+                sql += " HAVING total_activities < ?";
+                break;
+            case ">":
+                sql += " HAVING total_activities > ?";
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid comparison operator: " + comparison);
         }
 
         sql += " ORDER BY u.username";
@@ -76,7 +91,10 @@ public class UserActivityModel {
                 while (rs.next()) {
                     userActivities.add(new Object[] {
                             rs.getString("username"),
-                            rs.getString("full_name"),
+                            rs.getTimestamp("created_at"),
+                            rs.getInt("app_open_count"),
+                            rs.getInt("chat_count"),
+                            rs.getInt("group_join_count"),
                             rs.getInt("total_activities")
                     });
                 }
@@ -90,13 +108,13 @@ public class UserActivityModel {
     public static Map<Integer, Integer> getMonthlyUserActivityByYear(int year) {
         Map<Integer, Integer> activityData = new HashMap<>();
         String sql = """
-                    SELECT MONTH(u.created_at) AS month,
-                           COUNT(DISTINCT u.user_id) AS user_count
-                    FROM User u
-                    WHERE YEAR(u.created_at) = ?
-                    GROUP BY MONTH(u.created_at)
-                    ORDER BY month;
-                """;
+                SELECT MONTH(ua.activity_time) AS month,
+                       COUNT(DISTINCT ua.activity_id) AS total_activities
+                FROM User_Activity ua
+                WHERE YEAR(ua.activity_time) = ?
+                GROUP BY MONTH(ua.activity_time)
+                ORDER BY month;
+            """;
 
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -107,7 +125,7 @@ public class UserActivityModel {
                 while (rs.next()) {
                     activityData.put(
                             rs.getInt("month"),
-                            rs.getInt("user_count"));
+                            rs.getInt("total_activities"));
                 }
             }
         } catch (SQLException e) {

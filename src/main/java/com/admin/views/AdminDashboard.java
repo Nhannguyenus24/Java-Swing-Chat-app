@@ -42,6 +42,10 @@ public class AdminDashboard extends JFrame {
         new UserFriendController(userFriendPanel);
         tabbedPane.addTab("Danh sách người dùng và bạn bè", userFriendPanel);
 
+        UserActivityPanel userActivityPanel = new UserActivityPanel();
+        new UserActivityController(userActivityPanel);
+        tabbedPane.addTab("Danh sách người dùng hoạt động", userActivityPanel);
+
         this.add(tabbedPane);
         this.setVisible(true);
     }

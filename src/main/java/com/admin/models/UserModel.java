@@ -237,4 +237,92 @@ public class UserModel {
         return loginHistory;
     }
 
+    public static List<Object[]> getAllUsersWithFriends() {
+        List<Object[]> users = new ArrayList<>();
+        String sql = """
+                    SELECT
+                        u.username,
+                        u.created_at,
+                        COUNT(DISTINCT f.friend_id) AS direct_friends,
+                        (
+                            SELECT COUNT(DISTINCT f2.friend_id)
+                            FROM Friends f1
+                            JOIN Friends f2 ON f1.friend_id = f2.user_id
+                            WHERE f1.user_id = u.user_id
+                        ) AS total_friends
+                    FROM User u
+                    LEFT JOIN Friends f ON u.user_id = f.user_id
+                    GROUP BY u.user_id, u.username, u.created_at
+                    ORDER BY u.username
+                """;
+
+        try (Connection conn = DatabaseConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                users.add(new Object[] {
+                        rs.getString("username"),
+                        rs.getTimestamp("created_at"),
+                        rs.getInt("direct_friends"),
+                        rs.getInt("total_friends")
+                });
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
+
+    public static List<Object[]> filterUsers(String name, int directFriends, String comparison) {
+        List<Object[]> users = new ArrayList<>();
+        String baseSql = """
+                    SELECT
+                        u.username,
+                        u.created_at,
+                        COUNT(DISTINCT f.friend_id) AS direct_friends,
+                        (
+                            SELECT COUNT(DISTINCT f2.friend_id)
+                            FROM Friends f1
+                            LEFT JOIN Friends f2 ON f1.friend_id = f2.user_id
+                            WHERE f1.user_id = u.user_id AND f2.friend_id != u.user_id
+                        ) AS total_friends
+                    FROM User u
+                    LEFT JOIN Friends f ON u.user_id = f.user_id
+                    WHERE u.username LIKE ?
+                    GROUP BY u.user_id, u.username, u.created_at
+                """;
+
+        String sql = baseSql;
+
+        if (comparison.equals("=")) {
+            sql += " HAVING direct_friends = ?";
+        } else if (comparison.equals("<")) {
+            sql += " HAVING direct_friends < ?";
+        } else if (comparison.equals(">")) {
+            sql += " HAVING direct_friends > ?";
+        } else {
+            throw new IllegalArgumentException("Invalid comparison operator: " + comparison);
+        }
+
+        sql += " ORDER BY u.username";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, "%" + name + "%");
+            stmt.setInt(2, directFriends);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    users.add(new Object[] {
+                            rs.getString("username"),
+                            rs.getTimestamp("created_at"),
+                            rs.getInt("direct_friends"),
+                            rs.getInt("total_friends")
+                    });
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
 }

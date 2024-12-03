@@ -38,6 +38,10 @@ public class AdminDashboard extends JFrame {
         new RegistrationChartController(chartPanel);
         tabbedPane.addTab("Biểu đồ đăng ký mới", chartPanel);
 
+        UserFriendPanel userFriendPanel = new UserFriendPanel();
+        new UserFriendController(userFriendPanel);
+        tabbedPane.addTab("Danh sách người dùng và bạn bè", userFriendPanel);
+
         this.add(tabbedPane);
         this.setVisible(true);
     }

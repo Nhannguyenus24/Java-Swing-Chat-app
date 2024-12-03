@@ -11,10 +11,9 @@ public class RegistrationModel {
     public static List<Object[]> getAllRegistrations() {
         List<Object[]> registrations = new ArrayList<>();
         String sql = """
-                    SELECT u.username, u.full_name, ur.registration_time
-                    FROM User_Registrations ur
-                    INNER JOIN User u ON ur.user_id = u.user_id
-                    ORDER BY ur.registration_time DESC
+                    SELECT u.username, u.full_name, u.created_at
+                    FROM User u
+                    ORDER BY u.created_at DESC
                 """;
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -24,7 +23,7 @@ public class RegistrationModel {
                 registrations.add(new Object[] {
                         rs.getString("username"),
                         rs.getString("full_name"),
-                        rs.getTimestamp("registration_time")
+                        rs.getTimestamp("created_at")
                 });
             }
         } catch (SQLException e) {
@@ -36,18 +35,16 @@ public class RegistrationModel {
     public static List<Object[]> filterRegistrations(String keyword, Date startDate, Date endDate) {
         List<Object[]> results = new ArrayList<>();
         String sql = """
-                    SELECT u.username, u.full_name, ur.registration_time
-                    FROM User_Registrations ur
-                    INNER JOIN User u ON ur.user_id = u.user_id
+                    SELECT u.username, u.full_name, u.created_at
+                    FROM User u
                     WHERE (u.full_name LIKE ? OR ? IS NULL)
-                    AND ur.registration_time BETWEEN ? AND ?
-                    ORDER BY ur.registration_time DESC
+                    AND u.created_at BETWEEN ? AND ?
+                    ORDER BY u.created_at DESC
                 """;
 
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            // Gán tham số cho câu lệnh SQL
             stmt.setString(1, "%" + keyword + "%");
             stmt.setString(2, keyword.isEmpty() ? null : keyword);
             stmt.setDate(3, startDate);
@@ -58,7 +55,7 @@ public class RegistrationModel {
                     results.add(new Object[] {
                             rs.getString("username"),
                             rs.getString("full_name"),
-                            rs.getTimestamp("registration_time")
+                            rs.getTimestamp("created_at")
                     });
                 }
             }
@@ -71,10 +68,10 @@ public class RegistrationModel {
     public static Map<Integer, Integer> getMonthlyRegistrationsByYear(int year) {
         Map<Integer, Integer> registrations = new HashMap<>();
         String sql = """
-                    SELECT MONTH(registration_time) AS month, COUNT(*) AS total
-                    FROM User_Registrations
-                    WHERE YEAR(registration_time) = ?
-                    GROUP BY MONTH(registration_time)
+                    SELECT MONTH(created_at) AS month, COUNT(*) AS total
+                    FROM User
+                    WHERE YEAR(created_at) = ?
+                    GROUP BY MONTH(created_at)
                     ORDER BY month
                 """;
 

@@ -23,7 +23,7 @@ public class RegistrationController {
         registrations = RegistrationModel.getAllRegistrations();
         registrationModel = this.registrationPanel.registrationTableModel;
 
-        registrationModel.setRowCount(0); // Xóa dữ liệu cũ
+        registrationModel.setRowCount(0);
         for (Object[] registration : registrations) {
             registrationModel.addRow(registration);
         }
@@ -34,16 +34,14 @@ public class RegistrationController {
     }
 
     private void filterRegistrationsAction(ActionEvent e) {
-        // Lấy thông tin từ giao diện
+
         String keyword = this.registrationPanel.searchField.getText().trim();
         Date startDate = new Date(((java.util.Date) this.registrationPanel.startDateSpinner.getValue()).getTime());
         Date endDate = new Date(((java.util.Date) this.registrationPanel.endDateSpinner.getValue()).getTime());
 
-        // Gọi hàm từ model để lọc dữ liệu
         List<Object[]> filteredResults = RegistrationModel.filterRegistrations(keyword, startDate, endDate);
 
-        // Cập nhật bảng hiển thị
-        registrationModel.setRowCount(0); // Xóa dữ liệu cũ
+        registrationModel.setRowCount(0);
         for (Object[] row : filteredResults) {
             registrationModel.addRow(row);
         }

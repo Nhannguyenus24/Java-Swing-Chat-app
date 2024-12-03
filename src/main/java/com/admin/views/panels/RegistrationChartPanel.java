@@ -17,7 +17,6 @@ public class RegistrationChartPanel extends JPanel {
         JPanel controlPanel = new JPanel(new FlowLayout());
         yearComboBox = new JComboBox<>();
 
-        // Thêm các năm vào combobox
         int currentYear = Calendar.getInstance().get(Calendar.YEAR);
         for (int year = currentYear; year >= 2000; year--) {
             yearComboBox.addItem(year);
@@ -36,8 +35,8 @@ public class RegistrationChartPanel extends JPanel {
     public void updateChart(JFreeChart chart) {
         chartContainer.removeAll();
         ChartPanel chartPanel = new ChartPanel(chart);
-        chartPanel.setMouseWheelEnabled(false); // Tắt zoom bằng chuột
-        chartPanel.setMouseZoomable(false); // Tắt kéo thả
+        chartPanel.setMouseWheelEnabled(false);
+        chartPanel.setMouseZoomable(false);
         chartPanel.setPreferredSize(new java.awt.Dimension(800, 600));
 
         chartContainer.add(chartPanel, BorderLayout.CENTER);

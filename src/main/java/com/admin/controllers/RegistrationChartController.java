@@ -21,18 +21,15 @@ public class RegistrationChartController {
         this.addEventListeners();
     }
 
-    // Load dữ liệu ban đầu cho biểu đồ
     private void loadInitialChartData() {
         int initialYear = (int) registrationChartPanel.yearComboBox.getSelectedItem();
         this.updateChartData(initialYear);
     }
 
-    // Thêm sự kiện lắng nghe
     private void addEventListeners() {
         registrationChartPanel.yearComboBox.addItemListener(this::updateChartAction);
     }
 
-    // Xử lý sự kiện thay đổi năm
     private void updateChartAction(ItemEvent e) {
         if (e.getStateChange() == ItemEvent.SELECTED) {
             int selectedYear = (int) registrationChartPanel.yearComboBox.getSelectedItem();
@@ -40,13 +37,12 @@ public class RegistrationChartController {
         }
     }
 
-    // Cập nhật dữ liệu biểu đồ
     private void updateChartData(int year) {
         Map<Integer, Integer> data = RegistrationModel.getMonthlyRegistrationsByYear(year);
 
         if (data.isEmpty()) {
             JOptionPane.showMessageDialog(registrationChartPanel, "Không có dữ liệu đăng ký cho năm " + year);
-            registrationChartPanel.updateChart(null); // Xóa biểu đồ nếu không có dữ liệu
+            registrationChartPanel.updateChart(null);
             return;
         }
 
@@ -54,11 +50,9 @@ public class RegistrationChartController {
         registrationChartPanel.updateChart(chart);
     }
 
-    // Tạo biểu đồ từ dữ liệu
     private JFreeChart createChart(Map<Integer, Integer> data, int year) {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
-        // Thêm dữ liệu vào dataset
         for (int month = 1; month <= 12; month++) {
             int registrations = data.getOrDefault(month, 0);
             dataset.addValue(registrations, "Số lượng", String.valueOf(month));

@@ -1,89 +1,103 @@
--- Tạo cơ sở dữ liệu
 CREATE DATABASE IF NOT EXISTS `User_Management`;
+
 USE `User_Management`;
 
--- Tạo bảng `User` (Quản lý người dùng)
 CREATE TABLE `User` (
-    `user_id` INT AUTO_INCREMENT PRIMARY KEY,            -- Khóa chính
-    `username` VARCHAR(255) UNIQUE NOT NULL,             -- Tên đăng nhập
-    `full_name` VARCHAR(255) NOT NULL,                   -- Họ tên
-    `address` VARCHAR(255),                              -- Địa chỉ
-    `dob` DATE,                                          -- Ngày sinh
-    `gender` ENUM('Male', 'Female', 'Non-binary') NOT NULL,                 -- Giới tính
-    `email` VARCHAR(255) UNIQUE,                         -- Địa chỉ email
-    `status` ENUM('Active', 'Locked', 'Inactive') DEFAULT 'Inactive', -- Trạng thái tài khoản
-    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,     -- Thời gian tạo tài khoản
-    `password` VARCHAR(255) NOT NULL,                    -- Mật khẩu
-    `is_admin` BOOLEAN DEFAULT FALSE                     -- Xác định người quản trị
+    `user_id` INT AUTO_INCREMENT PRIMARY KEY,
+    `username` VARCHAR(255) UNIQUE NOT NULL,
+    `full_name` VARCHAR(255) NOT NULL,
+    `address` VARCHAR(255),
+    `dob` DATE,
+    `gender` ENUM('male', 'female', 'other') NOT NULL,
+    `email` VARCHAR(255) UNIQUE,
+    `password` VARCHAR(255) NOT NULL,
+    `is_admin` BOOLEAN DEFAULT FALSE,
+    `status` ENUM('online', 'offline', 'locked') DEFAULT 'offline',
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
--- Tạo bảng `Login_History` (Lịch sử đăng nhập)
 CREATE TABLE `Login_History` (
-    `history_id` INT AUTO_INCREMENT PRIMARY KEY,         -- Khóa chính
-    `user_id` INT,                                       -- Khóa ngoại tham chiếu `User`
-    `login_time` DATETIME DEFAULT CURRENT_TIMESTAMP,     -- Thời gian đăng nhập
+    `history_id` INT AUTO_INCREMENT PRIMARY KEY,
+    `user_id` INT,
+    `login_time` DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (`user_id`) REFERENCES `User`(`user_id`) ON DELETE CASCADE
 );
 
--- Tạo bảng `Friends` (Danh sách bạn bè)
+CREATE TABLE `Chat_Groups` (
+    `group_id` INT AUTO_INCREMENT PRIMARY KEY,
+    `group_name` VARCHAR(255) NOT NULL,
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE `Friends` (
-    `user_id` INT,                                       -- Khóa ngoại tham chiếu `User`
-    `friend_id` INT,                                     -- Khóa ngoại tham chiếu `User`
-    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,     -- Thời gian kết bạn
-    PRIMARY KEY (`user_id`, `friend_id`),                -- Khóa chính (2 cột)
+    `user_id` INT NOT NULL,
+    `friend_id` INT NOT NULL,
+    `status` ENUM('accepted', 'blocked') DEFAULT 'accepted',
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`user_id`, `friend_id`),
     FOREIGN KEY (`user_id`) REFERENCES `User`(`user_id`) ON DELETE CASCADE,
     FOREIGN KEY (`friend_id`) REFERENCES `User`(`user_id`) ON DELETE CASCADE
 );
 
--- Tạo bảng `Chat_Groups` (Nhóm chat)
-CREATE TABLE `Chat_Groups` (
-    `group_id` INT AUTO_INCREMENT PRIMARY KEY,           -- Khóa chính
-    `group_name` VARCHAR(255) NOT NULL,                  -- Tên nhóm
-    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP      -- Thời gian tạo nhóm
+CREATE TABLE `Friends_Request` (
+    `request_id` INT AUTO_INCREMENT PRIMARY KEY,
+    `sender_id` INT NOT NULL,
+    `receiver_id` INT NOT NULL,
+    FOREIGN KEY (`sender_id`) REFERENCES `User`(`user_id`) ON DELETE CASCADE,
+    FOREIGN KEY (`receiver_id`) REFERENCES `User`(`user_id`) ON DELETE CASCADE
 );
 
--- Tạo bảng `Group_Members` (Thành viên nhóm)
+CREATE TABLE `Messages` (
+    `message_id` INT AUTO_INCREMENT PRIMARY KEY,
+    `sender_id` INT NOT NULL,
+    `receiver_id` INT,
+    `group_id` INT,
+    `content` TEXT NOT NULL,
+    `sent_time` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`sender_id`) REFERENCES `User`(`user_id`) ON DELETE CASCADE,
+    FOREIGN KEY (`receiver_id`) REFERENCES `User`(`user_id`) ON DELETE CASCADE,
+    FOREIGN KEY (`group_id`) REFERENCES `Chat_Groups`(`group_id`) ON DELETE CASCADE
+);
+
+CREATE TABLE `User_Messages` (
+    `message_id` INT NOT NULL,
+    `user_id` INT NOT NULL,
+    `is_visible` BOOLEAN DEFAULT TRUE,
+    PRIMARY KEY (`message_id`, `user_id`),
+    FOREIGN KEY (`message_id`) REFERENCES `Messages`(`message_id`) ON DELETE CASCADE,
+    FOREIGN KEY (`user_id`) REFERENCES `User`(`user_id`) ON DELETE CASCADE
+);
+
 CREATE TABLE `Group_Members` (
-    `group_id` INT,                                      -- Khóa ngoại tham chiếu `Chat_Groups`
-    `user_id` INT,                                       -- Khóa ngoại tham chiếu `User`
-    `joined_at` DATETIME DEFAULT CURRENT_TIMESTAMP,      -- Thời gian gia nhập nhóm
-    PRIMARY KEY (`group_id`, `user_id`),                 -- Khóa chính (2 cột)
+    `group_id` INT,
+    `user_id` INT,
+    `joined_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`group_id`, `user_id`),
     FOREIGN KEY (`group_id`) REFERENCES `Chat_Groups`(`group_id`) ON DELETE CASCADE,
     FOREIGN KEY (`user_id`) REFERENCES `User`(`user_id`) ON DELETE CASCADE
 );
 
--- Tạo bảng `Group_Admins` (Quản trị viên nhóm)
 CREATE TABLE `Group_Admins` (
-    `group_id` INT,                                      -- Khóa ngoại tham chiếu `Chat_Groups`
-    `user_id` INT,                                       -- Khóa ngoại tham chiếu `User`
-    PRIMARY KEY (`group_id`, `user_id`),                 -- Khóa chính (2 cột)
+    `group_id` INT,
+    `user_id` INT,
+    PRIMARY KEY (`group_id`, `user_id`),
     FOREIGN KEY (`group_id`) REFERENCES `Chat_Groups`(`group_id`) ON DELETE CASCADE,
     FOREIGN KEY (`user_id`) REFERENCES `User`(`user_id`) ON DELETE CASCADE
 );
 
--- Tạo bảng `Spam_Reports` (Báo cáo spam)
 CREATE TABLE `Spam_Reports` (
-    `report_id` INT AUTO_INCREMENT PRIMARY KEY,          -- Khóa chính
-    `user_id` INT,                                       -- Khóa ngoại tham chiếu `User`
-    `report_time` DATETIME DEFAULT CURRENT_TIMESTAMP,    -- Thời gian báo cáo
-    `reason` TEXT,                                       -- Lý do báo cáo
+    `report_id` INT AUTO_INCREMENT PRIMARY KEY,
+    `user_id` INT,
+    `report_time` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    `reason` TEXT,
     FOREIGN KEY (`user_id`) REFERENCES `User`(`user_id`) ON DELETE CASCADE
 );
 
--- Tạo bảng `User_Registrations` (Đăng ký người dùng mới)
-CREATE TABLE `User_Registrations` (
-    `registration_id` INT AUTO_INCREMENT PRIMARY KEY,    -- Khóa chính
-    `user_id` INT,                                       -- Khóa ngoại tham chiếu `User`
-    `registration_time` DATETIME DEFAULT CURRENT_TIMESTAMP, -- Thời gian đăng ký
-    FOREIGN KEY (`user_id`) REFERENCES `User`(`user_id`) ON DELETE CASCADE
-);
-
--- Tạo bảng `User_Activity` (Hoạt động người dùng)
 CREATE TABLE `User_Activity` (
-    `activity_id` INT AUTO_INCREMENT PRIMARY KEY,        -- Khóa chính
-    `user_id` INT,                                       -- Khóa ngoại tham chiếu `User`
-    `activity_type` ENUM('App Open', 'Chat', 'Group Join') NOT NULL,  -- Loại hoạt động
-    `activity_count` INT DEFAULT 0,                      -- Số lần thực hiện hoạt động
-    `activity_date` DATETIME DEFAULT CURRENT_TIMESTAMP,  -- Ngày thực hiện hoạt động
+    `activity_id` INT AUTO_INCREMENT PRIMARY KEY,
+    `user_id` INT,
+    `activity_type` ENUM('app open', 'chat', 'group join') NOT NULL,
+    `description` TEXT,
+    `activity_time` DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (`user_id`) REFERENCES `User`(`user_id`) ON DELETE CASCADE
 );

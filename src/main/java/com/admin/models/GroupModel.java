@@ -78,7 +78,7 @@ public class GroupModel {
 
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, groupName); // Truyền tham số tên nhóm
+            stmt.setString(1, groupName);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
@@ -111,7 +111,7 @@ public class GroupModel {
 
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, groupName); // Truyền tham số tên nhóm
+            stmt.setString(1, groupName);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {

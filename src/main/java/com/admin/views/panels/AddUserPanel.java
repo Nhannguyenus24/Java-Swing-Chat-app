@@ -13,8 +13,8 @@ public class AddUserPanel extends JPanel {
     public JTextField emailField;
     public JPasswordField passwordField;
 
-    private static final String[] GENDER_OPTIONS = { "Male", "Female", "Non-binary" };
-    private static final String[] STATUS_OPTIONS = { "Active", "Locked", "Inactive" };
+    private static final String[] GENDER_OPTIONS = { "male", "female", "other" };
+    private static final String[] STATUS_OPTIONS = { "online", "offline", "locked" };
     private static final Dimension FIELD_PREFERRED_SIZE = new Dimension(250, 25);
 
     public AddUserPanel() {

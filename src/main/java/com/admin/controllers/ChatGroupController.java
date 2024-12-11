@@ -48,14 +48,14 @@ public class ChatGroupController {
     private void viewGroupMembersAction(ActionEvent e) {
         int viewRow = this.chatGroupPanel.groupTable.getSelectedRow();
         if (viewRow == -1) {
-            JOptionPane.showMessageDialog(null, "Vui lòng chọn một nhóm.");
+            JOptionPane.showMessageDialog(null, "Please select a group");
             return;
         }
         int modelRow = this.chatGroupPanel.groupTable.convertRowIndexToModel(viewRow);
         String groupName = (String) this.chatGroupPanel.groupTableModel.getValueAt(modelRow, 0);
         List<Object[]> members = GroupModel.getMembersByGroupname(groupName);
         if (members.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Không có người nào trong nhóm này.");
+            JOptionPane.showMessageDialog(null, "There are no people in this group");
             return;
         }
         new GroupMemberDialog(members);
@@ -64,14 +64,14 @@ public class ChatGroupController {
     private void viewGroupAdminsAction(ActionEvent e) {
         int viewRow = this.chatGroupPanel.groupTable.getSelectedRow();
         if (viewRow == -1) {
-            JOptionPane.showMessageDialog(null, "Vui lòng chọn một nhóm.");
+            JOptionPane.showMessageDialog(null, "Please select a group");
             return;
         }
         int modelRow = this.chatGroupPanel.groupTable.convertRowIndexToModel(viewRow);
         String groupName = (String) this.chatGroupPanel.groupTableModel.getValueAt(modelRow, 0);
         List<Object[]> admins = GroupModel.getAdminsByGroupname(groupName);
         if (admins.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Không có admin nào trong nhóm này.");
+            JOptionPane.showMessageDialog(null, "There are no admins in this group");
             return;
         }
         new GroupAdminDialog(admins);

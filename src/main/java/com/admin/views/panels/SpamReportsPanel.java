@@ -18,7 +18,7 @@ public class SpamReportsPanel extends JPanel {
         this.add(filterPanel, BorderLayout.NORTH);
 
         reportsTableModel = new DefaultTableModel(new Object[][] {},
-                new String[] { "Tên đăng nhập", "Họ tên", "Thời gian báo cáo", "Lý do" });
+                new String[] { "Username", "Full name", "Report time", "Reason" });
         reportsTable = new JTable(reportsTableModel);
         reportsTable.setAutoCreateRowSorter(true);
         this.add(new JScrollPane(reportsTable), BorderLayout.CENTER);
@@ -30,21 +30,21 @@ public class SpamReportsPanel extends JPanel {
     private JPanel createFilterPanel() {
         JPanel panel = new JPanel(new FlowLayout());
 
-        panel.add(new JLabel("Lọc theo tên:"));
+        panel.add(new JLabel("Filter by name:"));
         searchField = new JTextField(15);
         panel.add(searchField);
 
-        panel.add(new JLabel("Từ ngày:"));
+        panel.add(new JLabel("From date:"));
         startDateSpinner = new JSpinner(new SpinnerDateModel());
         startDateSpinner.setEditor(new JSpinner.DateEditor(startDateSpinner, "yyyy-MM-dd"));
         panel.add(startDateSpinner);
 
-        panel.add(new JLabel("Đến ngày:"));
+        panel.add(new JLabel("To date:"));
         endDateSpinner = new JSpinner(new SpinnerDateModel());
         endDateSpinner.setEditor(new JSpinner.DateEditor(endDateSpinner, "yyyy-MM-dd"));
         panel.add(endDateSpinner);
 
-        filterButton = new JButton("Lọc");
+        filterButton = new JButton("Filter");
         panel.add(filterButton);
 
         return panel;
@@ -53,7 +53,7 @@ public class SpamReportsPanel extends JPanel {
     private JPanel createActionPanel() {
         JPanel panel = new JPanel(new FlowLayout());
 
-        blockUserButton = new JButton("Khóa tài khoản");
+        blockUserButton = new JButton("Lock account");
         panel.add(blockUserButton);
 
         return panel;

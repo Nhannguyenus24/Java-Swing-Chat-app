@@ -31,8 +31,8 @@ public class UserActivityPanel extends JPanel {
         this.add(filterAndControlPanel, BorderLayout.NORTH);
 
         userTableModel = new DefaultTableModel(new Object[][] {},
-                new String[] { "Tên người dùng", "Thời gian tạo", "Số lần mở ứng dụng", "Số người đã chat",
-                        "Số nhóm đã chat", "Tổng số lượng hoạt động" });
+                new String[] { "Username", "Creation time", "Number of app openings", "Number of people chatted with",
+                        "Number of groups chatted in", "Total activity count" });
 
         userTable = new JTable(userTableModel);
         userTable.setAutoCreateRowSorter(true);
@@ -44,16 +44,16 @@ public class UserActivityPanel extends JPanel {
     private JPanel createFilterPanel() {
         JPanel panel = new JPanel(new FlowLayout());
 
-        panel.add(new JLabel("Lọc theo tên:"));
+        panel.add(new JLabel("Filter by name:"));
         searchField = new JTextField(15);
         panel.add(searchField);
 
-        panel.add(new JLabel("Từ ngày:"));
+        panel.add(new JLabel("From date:"));
         startDateSpinner = new JSpinner(new SpinnerDateModel());
         startDateSpinner.setEditor(new JSpinner.DateEditor(startDateSpinner, "yyyy-MM-dd"));
         panel.add(startDateSpinner);
 
-        panel.add(new JLabel("Đến ngày:"));
+        panel.add(new JLabel("To date:"));
         endDateSpinner = new JSpinner(new SpinnerDateModel());
         endDateSpinner.setEditor(new JSpinner.DateEditor(endDateSpinner, "yyyy-MM-dd"));
         panel.add(endDateSpinner);
@@ -64,15 +64,15 @@ public class UserActivityPanel extends JPanel {
     private JPanel createControlPanel() {
         JPanel panel = new JPanel(new FlowLayout());
 
-        panel.add(new JLabel("So sánh số lượng hoạt động:"));
+        panel.add(new JLabel("Compare activity count:"));
         comparisonBox = new JComboBox<>(new String[] { "=", ">", "<" });
         panel.add(comparisonBox);
 
-        panel.add(new JLabel("Số lượng hoạt động:"));
+        panel.add(new JLabel("Activity count:"));
         activityCountSpinner = new JSpinner(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
         panel.add(activityCountSpinner);
 
-        filterButton = new JButton("Lọc");
+        filterButton = new JButton("Filter");
         panel.add(filterButton);
 
         return panel;

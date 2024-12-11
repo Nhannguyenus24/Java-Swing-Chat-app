@@ -16,9 +16,9 @@ public class ResetPasswordPanel extends JPanel {
         newPasswordField = createPasswordField();
         confirmPasswordField = createPasswordField();
 
-        addLabelAndComponent("Mật khẩu cũ", oldPasswordField);
-        addLabelAndComponent("Mật khẩu mới", newPasswordField);
-        addLabelAndComponent("Xác nhận mật khẩu mới", confirmPasswordField);
+        addLabelAndComponent("Old password", oldPasswordField);
+        addLabelAndComponent("New password", newPasswordField);
+        addLabelAndComponent("Confirm new password", confirmPasswordField);
     }
 
     private JPasswordField createPasswordField() {

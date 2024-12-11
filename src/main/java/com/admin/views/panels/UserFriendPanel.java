@@ -19,7 +19,7 @@ public class UserFriendPanel extends JPanel {
         this.add(filterPanel, BorderLayout.NORTH);
 
         userTableModel = new DefaultTableModel(new Object[][]{},
-                new String[]{"Tên người dùng", "Thời gian tạo", "Bạn bè trực tiếp", "Tổng bạn bè"});
+                new String[]{"Username", "Creation time", "Direct friends", "Total friends"});
 
         userTable = new JTable(userTableModel);
         userTable.setAutoCreateRowSorter(true);
@@ -30,18 +30,18 @@ public class UserFriendPanel extends JPanel {
         JPanel panel = new JPanel(new FlowLayout());
 
         searchField = new JTextField(15);
-        panel.add(new JLabel("Tên người dùng:"));
+        panel.add(new JLabel("Username:"));
         panel.add(searchField);
 
         comparisonBox = new JComboBox<>(new String[]{"=", ">", "<"});
-        panel.add(new JLabel("So sánh số bạn:"));
+        panel.add(new JLabel("Compare number of friends:"));
         panel.add(comparisonBox);
 
         friendCountSpinner = new JSpinner(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
-        panel.add(new JLabel("Số lượng bạn:"));
+        panel.add(new JLabel("Number of friends:"));
         panel.add(friendCountSpinner);
 
-        filterButton = new JButton("Lọc");
+        filterButton = new JButton("Filter");
         panel.add(filterButton);
 
         return panel;

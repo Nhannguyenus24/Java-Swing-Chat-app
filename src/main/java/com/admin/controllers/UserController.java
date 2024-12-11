@@ -58,7 +58,7 @@ public class UserController {
     private void addUserAction(ActionEvent e) {
         AddUserPanel panel = new AddUserPanel();
 
-        int option = JOptionPane.showConfirmDialog(null, panel, "Nhập thông tin người dùng",
+        int option = JOptionPane.showConfirmDialog(null, panel, "Enter user information",
                 JOptionPane.OK_CANCEL_OPTION);
 
         if (option == JOptionPane.OK_OPTION) {
@@ -71,16 +71,16 @@ public class UserController {
             String email = panel.emailField.getText().trim();
             String password = new String(panel.passwordField.getPassword());
 
-            if (username.isEmpty() || fullName.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Tên đăng nhập và họ tên là bắt buộc.");
+            if (username.isEmpty() || fullName.isEmpty() || password.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "username, full name and password are required");
             } else {
 
                 boolean success = UserModel.addUser(username, fullName, address, dob, gender, status, email, password);
                 if (success) {
-                    JOptionPane.showMessageDialog(null, "Người dùng đã được thêm thành công!");
+                    JOptionPane.showMessageDialog(null, "The user has been successfully added");
                     loadUserData();
                 } else {
-                    JOptionPane.showMessageDialog(null, "Thêm người dùng thất bại.");
+                    JOptionPane.showMessageDialog(null, "User add failed");
                 }
             }
         }
@@ -89,7 +89,7 @@ public class UserController {
     private void deleteUserAction(ActionEvent e) {
         int viewRow = this.userPanel.userTable.getSelectedRow();
         if (viewRow == -1) {
-            JOptionPane.showMessageDialog(null, "Vui lòng chọn một người dùng để xóa.");
+            JOptionPane.showMessageDialog(null, "Please select a user to delete");
             return;
         }
         int modelRow = this.userPanel.userTable.convertRowIndexToModel(viewRow);
@@ -105,10 +105,10 @@ public class UserController {
         if (confirm == JOptionPane.YES_OPTION) {
             boolean success = UserModel.deleteUser(username);
             if (success) {
-                JOptionPane.showMessageDialog(null, "Xóa người dùng thành công!");
+                JOptionPane.showMessageDialog(null, "User deleted successfully!");
                 loadUserData();
             } else {
-                JOptionPane.showMessageDialog(null, "Xóa người dùng thất bại.");
+                JOptionPane.showMessageDialog(null, "Failed to delete user.");
             }
         }
     }
@@ -116,7 +116,7 @@ public class UserController {
     private void updateUserAction(ActionEvent e) {
         int viewRow = this.userPanel.userTable.getSelectedRow();
         if (viewRow == -1) {
-            JOptionPane.showMessageDialog(null, "Vui lòng chọn một người dùng để cập nhật.");
+            JOptionPane.showMessageDialog(null, "Please select a user to update.");
             return;
         }
 
@@ -132,7 +132,7 @@ public class UserController {
         UpdateUserPanel panel = new UpdateUserPanel(currentFullName, currentAddress, currentDob,
                 currentGender, currentEmail);
 
-        int option = JOptionPane.showConfirmDialog(null, panel, "Cập nhật thông tin người dùng",
+        int option = JOptionPane.showConfirmDialog(null, panel, "Update user information",
                 JOptionPane.OK_CANCEL_OPTION);
 
         if (option == JOptionPane.OK_OPTION) {
@@ -143,15 +143,15 @@ public class UserController {
             String email = panel.emailField.getText().trim();
 
             if (fullName.isEmpty() || email.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Họ tên và Email là bắt buộc.");
+                JOptionPane.showMessageDialog(null, "Full name and email are required.");
             } else {
 
                 boolean success = UserModel.updateUser(username, fullName, address, dob, gender, email);
                 if (success) {
-                    JOptionPane.showMessageDialog(null, "Cập nhật thông tin người dùng thành công!");
+                    JOptionPane.showMessageDialog(null, "User information updated successfully!");
                     loadUserData();
                 } else {
-                    JOptionPane.showMessageDialog(null, "Cập nhật thông tin người dùng thất bại.");
+                    JOptionPane.showMessageDialog(null, "Failed to update user information.");
                 }
             }
         }
@@ -160,7 +160,7 @@ public class UserController {
     private void toggleLockUnlockAction(ActionEvent e) {
         int viewRow = this.userPanel.userTable.getSelectedRow();
         if (viewRow == -1) {
-            JOptionPane.showMessageDialog(null, "Vui lòng chọn một người dùng để khóa/mở khóa.");
+            JOptionPane.showMessageDialog(null, "Please select a user to lock/unlock.");
             return;
         }
         int modelRow = this.userPanel.userTable.convertRowIndexToModel(viewRow);
@@ -170,23 +170,23 @@ public class UserController {
 
         boolean success = UserModel.toggleLockUnlockStatus(username, status);
         if (success) {
-            if ("Locked".equals(status))
-                JOptionPane.showMessageDialog(null, "Mở khóa người dùng thành công!");
+            if ("locked".equals(status))
+                JOptionPane.showMessageDialog(null, "User unlocked successfully!");
             else
-                JOptionPane.showMessageDialog(null, "Khóa người dùng thành công!");
+                JOptionPane.showMessageDialog(null, "User locked successfully!");
             loadUserData();
         } else {
-            if ("Locked".equals(status))
-                JOptionPane.showMessageDialog(null, "Mở khóa người dùng thất bại.");
+            if ("locked".equals(status))
+                JOptionPane.showMessageDialog(null, "Failed to unlock user.");
             else
-                JOptionPane.showMessageDialog(null, "Khóa người dùng thất bại.");
+                JOptionPane.showMessageDialog(null, "Failed to lock user.");
         }
     }
 
     private void resetPasswordAction(ActionEvent e) {
         int viewRow = this.userPanel.userTable.getSelectedRow();
         if (viewRow == -1) {
-            JOptionPane.showMessageDialog(null, "Vui lòng chọn một người dùng để cập nhật mật khẩu.");
+            JOptionPane.showMessageDialog(null, "Please select a user to update the password.");
             return;
         }
         int modelRow = this.userPanel.userTable.convertRowIndexToModel(viewRow);
@@ -194,13 +194,13 @@ public class UserController {
         String username = (String) this.userPanel.model.getValueAt(modelRow, 0);
         String currentPassword = UserModel.getPasswordByUsername(username);
         if (currentPassword == null) {
-            JOptionPane.showMessageDialog(null, "Không thể lấy thông tin mật khẩu người dùng.");
+            JOptionPane.showMessageDialog(null, "Unable to retrieve user password information.");
             return;
         }
 
         ResetPasswordPanel panel = new ResetPasswordPanel();
 
-        int option = JOptionPane.showConfirmDialog(null, panel, "Đặt lại mật khẩu",
+        int option = JOptionPane.showConfirmDialog(null, panel, "Reset password",
                 JOptionPane.OK_CANCEL_OPTION);
 
         if (option == JOptionPane.OK_OPTION) {
@@ -209,26 +209,26 @@ public class UserController {
             String confirmPassword = new String(panel.confirmPasswordField.getPassword());
 
             if (oldPassword.isEmpty() || newPassword.isEmpty() || confirmPassword.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ các trường.");
+                JOptionPane.showMessageDialog(null, "Please fill in all the fields.");
                 return;
             }
 
             if (!oldPassword.equals(currentPassword)) {
-                JOptionPane.showMessageDialog(null, "Mật khẩu cũ không chính xác.");
+                JOptionPane.showMessageDialog(null, "The old password is incorrect.");
                 return;
             }
 
             if (!newPassword.equals(confirmPassword)) {
-                JOptionPane.showMessageDialog(null, "Mật khẩu mới và xác nhận mật khẩu không khớp.");
+                JOptionPane.showMessageDialog(null, "The new password and confirm password do not match.");
                 return;
             }
 
             boolean success = UserModel.resetPassword(username, newPassword);
             if (success) {
-                JOptionPane.showMessageDialog(null, "Cập nhật mật khẩu người dùng thành công!");
+                JOptionPane.showMessageDialog(null, "User password updated successfully!");
                 loadUserData();
             } else {
-                JOptionPane.showMessageDialog(null, "Cập nhật mật khẩu thất bại.");
+                JOptionPane.showMessageDialog(null, "Failed to update password.");
             }
         }
     }
@@ -236,7 +236,7 @@ public class UserController {
     public void viewHistoryAction(ActionEvent e) {
         int viewRow = this.userPanel.userTable.getSelectedRow();
         if (viewRow == -1) {
-            JOptionPane.showMessageDialog(null, "Vui lòng chọn một người dùng để xem lịch sử đăng nhập.");
+            JOptionPane.showMessageDialog(null, "Please select a user to view the login history.");
             return;
         }
         int modelRow = this.userPanel.userTable.convertRowIndexToModel(viewRow);
@@ -244,7 +244,7 @@ public class UserController {
         String username = (String) this.userPanel.model.getValueAt(modelRow, 0);
         List<Object[]> history = UserModel.getLoginHistoryByUsername(username);
         if (history.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Không có lịch sử đăng nhập nào cho người dùng này.");
+            JOptionPane.showMessageDialog(null, "There is no login history for this user.");
             return;
         }
         new HistoryDialog(history);
@@ -253,7 +253,7 @@ public class UserController {
     public void viewFriendsAction(ActionEvent e) {
         int viewRow = this.userPanel.userTable.getSelectedRow();
         if (viewRow == -1) {
-            JOptionPane.showMessageDialog(null, "Vui lòng chọn một người dùng để xem danh sách bạn bè.");
+            JOptionPane.showMessageDialog(null, "Please select a user to view the friend list.");
             return;
         }
         int modelRow = this.userPanel.userTable.convertRowIndexToModel(viewRow);
@@ -261,7 +261,7 @@ public class UserController {
         String username = (String) this.userPanel.model.getValueAt(modelRow, 0);
         List<Object[]> friends = UserModel.getFriendListByUsername(username);
         if (friends.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Người dùng này chưa có bạn bè nào.");
+            JOptionPane.showMessageDialog(null, "This user has no friends.");
             return;
         }
 

@@ -28,7 +28,7 @@ public class UserManagementPanel extends JPanel {
         this.add(searchPanel, BorderLayout.NORTH);
 
         model = new DefaultTableModel(new Object[][] {},
-                new String[] { "Tên đăng nhập", "Họ tên", "Địa chỉ", "Ngày sinh", "Giới tính", "Email", "Trạng thái" });
+                new String[] { "Username", "Full name", "Address", "Date of birth", "Gender", "Email", "Status" });
 
         userTable = new JTable(model);
         userTable.setAutoCreateRowSorter(true);
@@ -41,16 +41,16 @@ public class UserManagementPanel extends JPanel {
     private JPanel createSearchPanel() {
         JPanel panel = new JPanel(new FlowLayout());
 
-        String[] searchCriteria = { "Tên đăng nhập", "Họ tên", "Trạng thái" };
+        String[] searchCriteria = { "Username", "Full name", "Status" };
         searchCriteriaComboBox = new JComboBox<>(searchCriteria);
-        panel.add(new JLabel("Chọn tiêu chí tìm kiếm:"));
+        panel.add(new JLabel("Select search criteria:"));
         panel.add(searchCriteriaComboBox);
 
         searchField = new JTextField(20);
-        panel.add(new JLabel("Nhập từ khóa:"));
+        panel.add(new JLabel("Enter keyword:"));
         panel.add(searchField);
 
-        searchButton = new JButton("Tìm kiếm");
+        searchButton = new JButton("Search");
         panel.add(searchButton);
 
         return panel;
@@ -58,13 +58,13 @@ public class UserManagementPanel extends JPanel {
 
     private JPanel createActionPanel() {
         JPanel panel = new JPanel(new FlowLayout());
-        addButton = new JButton("Thêm");
-        deleteButton = new JButton("Xóa");
-        updateButton = new JButton("Cập nhật thông tin");
-        toggleLockButton = new JButton("Khoá/Mở khoá tài khoản");
-        resetPasswordButton = new JButton("Cập nhật mật khẩu");
-        viewHistoryButton = new JButton("Xem lịch sử đăng nhập");
-        viewFriendsButton = new JButton("Xem danh sách bạn bè");
+        addButton = new JButton("Add");
+        deleteButton = new JButton("Delete");
+        updateButton = new JButton("Update information");
+        toggleLockButton = new JButton("Lock/Unlock");
+        resetPasswordButton = new JButton("Update password");
+        viewHistoryButton = new JButton("View login history");
+        viewFriendsButton = new JButton("View friend list");
 
         panel.add(addButton);
         panel.add(deleteButton);

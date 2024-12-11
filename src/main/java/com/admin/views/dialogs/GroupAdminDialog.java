@@ -14,10 +14,10 @@ public class GroupAdminDialog extends JDialog {
         this.setAlwaysOnTop(true);
         this.setVisible(true);
         this.setLocationRelativeTo(null);
-        this.setTitle("Danh sách admin trong nhóm");
+        this.setTitle("List of admins in the group");
 
         model = new DefaultTableModel(new Object[][] {},
-                new String[] { "Tên đăng nhập", "Họ tên", "Địa chỉ", "Ngày sinh", "Giới tính", "Email", "Trạng thái" });
+                new String[] { "Username", "Full name", "Address", "Date of birth", "Gender", "Email", "Status" });
         membersTable = new JTable(model);
 
         for (Object[] row : admins) {

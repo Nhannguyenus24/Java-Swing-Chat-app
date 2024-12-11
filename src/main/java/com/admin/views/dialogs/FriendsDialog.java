@@ -14,10 +14,10 @@ public class FriendsDialog extends JDialog {
         this.setAlwaysOnTop(true);
         this.setVisible(true);
         this.setLocationRelativeTo(null);
-        this.setTitle("Danh sách bạn bè");
+        this.setTitle("Friend list");
 
         model = new DefaultTableModel(new Object[][] {},
-                new String[] { "Tên đăng nhập", "Họ tên", "Địa chỉ", "Ngày sinh", "Giới tính", "Email", "Trạng thái" });
+                new String[] { "Username", "Full name", "Address", "Date of birth", "Gender", "Email", "Status" });
         friendsTable = new JTable(model);
 
         for (Object[] row : friendData) {

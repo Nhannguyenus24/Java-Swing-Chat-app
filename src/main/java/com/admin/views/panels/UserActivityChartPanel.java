@@ -22,7 +22,7 @@ public class UserActivityChartPanel extends JPanel {
             yearComboBox.addItem(year);
         }
 
-        controlPanel.add(new JLabel("Chọn năm:"));
+        controlPanel.add(new JLabel("Select year:"));
         controlPanel.add(yearComboBox);
 
         chartContainer = new JPanel(new BorderLayout());

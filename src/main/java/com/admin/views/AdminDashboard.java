@@ -7,7 +7,7 @@ import javax.swing.*;
 public class AdminDashboard extends JFrame {
 
     public AdminDashboard() {
-        this.setTitle("Phân hệ dành cho người quản trị");
+        this.setTitle("Admin module");
         this.setSize(960, 540);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
@@ -16,39 +16,39 @@ public class AdminDashboard extends JFrame {
 
         UserManagementPanel userPanel = new UserManagementPanel();
         new UserController(userPanel);
-        tabbedPane.addTab("Quản lý người dùng", userPanel);
+        tabbedPane.addTab("User management", userPanel);
 
         LoginHistoryPanel loginHistoryPanel = new LoginHistoryPanel();
         new LoginHistoryController(loginHistoryPanel);
-        tabbedPane.addTab("Lịch sử đăng nhập", loginHistoryPanel);
+        tabbedPane.addTab("Login history", loginHistoryPanel);
 
         ChatGroupPanel chatGroupPanel = new ChatGroupPanel();
         new ChatGroupController(chatGroupPanel);
-        tabbedPane.addTab("Quản lý nhóm chat", chatGroupPanel);
+        tabbedPane.addTab("Manage chat groups", chatGroupPanel);
 
         SpamReportsPanel spamReportsPanel = new SpamReportsPanel();
         new SpamReportController(spamReportsPanel);
-        tabbedPane.addTab("Báo cáo spam", spamReportsPanel);
+        tabbedPane.addTab("Spam report", spamReportsPanel);
 
         RegistrationPanel registrationPanel = new RegistrationPanel();
         new RegistrationController(registrationPanel);
-        tabbedPane.addTab("Người dùng đăng ký mới", registrationPanel);
+        tabbedPane.addTab("Newly registered users", registrationPanel);
 
         RegistrationChartPanel chartPanel = new RegistrationChartPanel();
         new RegistrationChartController(chartPanel);
-        tabbedPane.addTab("Biểu đồ đăng ký mới", chartPanel);
+        tabbedPane.addTab("New registrations chart", chartPanel);
 
         UserFriendPanel userFriendPanel = new UserFriendPanel();
         new UserFriendController(userFriendPanel);
-        tabbedPane.addTab("Danh sách người dùng và bạn bè", userFriendPanel);
+        tabbedPane.addTab("User and friend list", userFriendPanel);
 
         UserActivityPanel userActivityPanel = new UserActivityPanel();
         new UserActivityController(userActivityPanel);
-        tabbedPane.addTab("Danh sách người dùng hoạt động", userActivityPanel);
+        tabbedPane.addTab("Active user list", userActivityPanel);
 
         UserActivityChartPanel userActivityChartPanel = new UserActivityChartPanel();
         new UserActivityChartController(userActivityChartPanel);
-        tabbedPane.addTab("Biểu động người dùng hoạt động", userActivityChartPanel);
+        tabbedPane.addTab("Active user chart", userActivityChartPanel);
 
         this.add(tabbedPane);
         this.setVisible(true);

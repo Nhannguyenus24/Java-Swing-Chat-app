@@ -14,10 +14,10 @@ public class HistoryDialog extends JDialog {
         this.setAlwaysOnTop(true);
         this.setVisible(true);
         this.setLocationRelativeTo(null);
-        this.setTitle("Lịch sử đăng nhập");
+        this.setTitle("Login history");
 
         model = new DefaultTableModel(new Object[][] {},
-                new String[] { "Thời gian đăng nhập" });
+                new String[] { "Login time"});
         historyTable = new JTable(model);
 
         for (Object[] row : historyData) {

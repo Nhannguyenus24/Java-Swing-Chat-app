@@ -18,7 +18,7 @@ public class RegistrationPanel extends JPanel {
         this.add(filterPanel, BorderLayout.NORTH);
 
         registrationTableModel = new DefaultTableModel(new Object[][] {},
-                new String[] { "Tên đăng nhập", "Họ tên", "Thời gian đăng ký" });
+                new String[] { "Username", "Full name", "Registration time" });
         registrationTable = new JTable(registrationTableModel);
         registrationTable.setAutoCreateRowSorter(true);
         this.add(new JScrollPane(registrationTable), BorderLayout.CENTER);
@@ -27,21 +27,21 @@ public class RegistrationPanel extends JPanel {
     private JPanel createFilterPanel() {
         JPanel panel = new JPanel(new FlowLayout());
 
-        panel.add(new JLabel("Lọc theo tên:"));
+        panel.add(new JLabel("Filter by name:"));
         searchField = new JTextField(15);
         panel.add(searchField);
 
-        panel.add(new JLabel("Từ ngày:"));
+        panel.add(new JLabel("From date:"));
         startDateSpinner = new JSpinner(new SpinnerDateModel());
         startDateSpinner.setEditor(new JSpinner.DateEditor(startDateSpinner, "yyyy-MM-dd"));
         panel.add(startDateSpinner);
 
-        panel.add(new JLabel("Đến ngày:"));
+        panel.add(new JLabel("To date:"));
         endDateSpinner = new JSpinner(new SpinnerDateModel());
         endDateSpinner.setEditor(new JSpinner.DateEditor(endDateSpinner, "yyyy-MM-dd"));
         panel.add(endDateSpinner);
 
-        filterButton = new JButton("Lọc");
+        filterButton = new JButton("Filter");
         panel.add(filterButton);
 
         return panel;

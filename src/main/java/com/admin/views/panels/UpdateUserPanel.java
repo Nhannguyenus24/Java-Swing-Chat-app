@@ -24,10 +24,10 @@ public class UpdateUserPanel extends JPanel {
         genderComboBox = createComboBox(GENDER_OPTIONS, currentGender);
         emailField = createTextField(currentEmail);
 
-        addLabelAndComponent("Họ tên:", fullNameField);
-        addLabelAndComponent("Địa chỉ:", addressField);
-        addLabelAndComponent("Ngày sinh:", dobField);
-        addLabelAndComponent("Giới tính:", genderComboBox);
+        addLabelAndComponent("Full name:", fullNameField);
+        addLabelAndComponent("Address:", addressField);
+        addLabelAndComponent("Date of birth:", dobField);
+        addLabelAndComponent("Gender:", genderComboBox);
         addLabelAndComponent("Email:", emailField);
     }
 

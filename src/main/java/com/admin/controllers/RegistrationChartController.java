@@ -41,7 +41,7 @@ public class RegistrationChartController {
         Map<Integer, Integer> data = RegistrationModel.getMonthlyRegistrationsByYear(year);
 
         if (data.isEmpty()) {
-            JOptionPane.showMessageDialog(registrationChartPanel, "Không có dữ liệu đăng ký cho năm " + year);
+            JOptionPane.showMessageDialog(registrationChartPanel, "No registration data for the year " + year);
             registrationChartPanel.updateChart(null);
             return;
         }
@@ -55,13 +55,13 @@ public class RegistrationChartController {
 
         for (int month = 1; month <= 12; month++) {
             int registrations = data.getOrDefault(month, 0);
-            dataset.addValue(registrations, "Số lượng", String.valueOf(month));
+            dataset.addValue(registrations, "Quantity", String.valueOf(month));
         }
 
         JFreeChart chart = ChartFactory.createBarChart(
-                "Số lượng đăng ký mới theo tháng (" + year + ")",
-                "Tháng",
-                "Số lượng",
+                "Number of new registrations per month (" + year + ")",
+                "Month",
+                "Quantity",
                 dataset);
 
         CategoryPlot plot = (CategoryPlot) chart.getPlot();

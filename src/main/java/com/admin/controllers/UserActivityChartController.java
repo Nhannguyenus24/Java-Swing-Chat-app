@@ -41,7 +41,7 @@ public class UserActivityChartController {
         Map<Integer, Integer> data = UserActivityModel.getMonthlyUserActivityByYear(year);
 
         if (data.isEmpty()) {
-            JOptionPane.showMessageDialog(userActivityChartPanel, "Không có dữ liệu hoạt động cho năm " + year);
+            JOptionPane.showMessageDialog(userActivityChartPanel, "No activity data for the year " + year);
             userActivityChartPanel.updateChart(null);
             return;
         }
@@ -55,13 +55,13 @@ public class UserActivityChartController {
 
         for (int month = 1; month <= 12; month++) {
             int userCount = data.getOrDefault(month, 0);
-            dataset.addValue(userCount, "Số lượng người", String.valueOf(month));
+            dataset.addValue(userCount, "Number of people", String.valueOf(month));
         }
 
         JFreeChart chart = ChartFactory.createBarChart(
-                "Số lượng người hoạt động theo tháng (" + year + ")",
-                "Tháng",
-                "Số lượng người",
+                "Number of active users per month (" + year + ")",
+                "Month",
+                "Number of people",
                 dataset);
 
         CategoryPlot plot = (CategoryPlot) chart.getPlot();

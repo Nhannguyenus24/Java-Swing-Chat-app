@@ -21,7 +21,7 @@ public class ChatGroupPanel extends JPanel {
         this.add(searchPanel, BorderLayout.NORTH);
 
         groupTableModel = new DefaultTableModel(new Object[][] {},
-                new String[] { "Tên nhóm", "Số thành viên", "Thời gian tạo" });
+                new String[] {"Group name", "Number of members", "Creation time"});
 
         groupTable = new JTable(groupTableModel);
         groupTable.setAutoCreateRowSorter(true);
@@ -35,10 +35,10 @@ public class ChatGroupPanel extends JPanel {
         JPanel panel = new JPanel(new FlowLayout());
 
         searchField = new JTextField(20);
-        panel.add(new JLabel("Nhập tên nhóm:"));
+        panel.add(new JLabel("Enter group name:"));
         panel.add(searchField);
 
-        searchButton = new JButton("Tìm kiếm");
+        searchButton = new JButton("Search");
         panel.add(searchButton);
 
         return panel;
@@ -46,8 +46,8 @@ public class ChatGroupPanel extends JPanel {
 
     private JPanel createButtonPanel() {
         JPanel panel = new JPanel(new FlowLayout());
-        viewMembersButton = new JButton("Xem thành viên");
-        viewAdminsButton = new JButton("Xem quản trị viên");
+        viewMembersButton = new JButton("View members");
+        viewAdminsButton = new JButton("View admins");
         panel.add(viewMembersButton);
         panel.add(viewAdminsButton);
         return panel;

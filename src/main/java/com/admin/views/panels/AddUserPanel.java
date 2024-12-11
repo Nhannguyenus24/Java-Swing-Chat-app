@@ -29,14 +29,14 @@ public class AddUserPanel extends JPanel {
         emailField = createTextField();
         passwordField = new JPasswordField();
 
-        addLabelAndComponent("Tên đăng nhập:", usernameField);
-        addLabelAndComponent("Họ tên:", fullNameField);
-        addLabelAndComponent("Địa chỉ:", addressField);
-        addLabelAndComponent("Ngày sinh:", dobField);
-        addLabelAndComponent("Giới tính:", genderComboBox);
-        addLabelAndComponent("Trạng thái:", statusComboBox);
+        addLabelAndComponent("Username:", usernameField);
+        addLabelAndComponent("Full name:", fullNameField);
+        addLabelAndComponent("Address:", addressField);
+        addLabelAndComponent("Date of birth:", dobField);
+        addLabelAndComponent("Gender:", genderComboBox);
+        addLabelAndComponent("Status:", statusComboBox);
         addLabelAndComponent("Email:", emailField);
-        addLabelAndComponent("Mật khẩu:", passwordField);
+        addLabelAndComponent("Password:", passwordField);
     }
 
     private JTextField createTextField() {

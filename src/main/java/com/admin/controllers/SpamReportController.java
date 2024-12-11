@@ -44,7 +44,7 @@ public class SpamReportController {
     private void blockUserAction(ActionEvent e) {
         int viewRow = this.panel.reportsTable.getSelectedRow();
         if (viewRow == -1) {
-            JOptionPane.showMessageDialog(null, "Vui lòng chọn một người dùng để khóa!");
+            JOptionPane.showMessageDialog(null, "Please select a user to lock");
             return;
         }
         int modelRow = this.panel.reportsTable.convertRowIndexToModel(viewRow);
@@ -52,10 +52,10 @@ public class SpamReportController {
         String username = (String) panel.reportsTableModel.getValueAt(modelRow, 0);
         boolean success = SpamReportModel.blockUser(username);
         if (success) {
-            JOptionPane.showMessageDialog(panel, "Tài khoản đã bị khóa thành công.");
+            JOptionPane.showMessageDialog(panel, "The account has been successfully locked");
             loadReportData();
         } else {
-            JOptionPane.showMessageDialog(panel, "Khóa tài khoản thất bại!");
+            JOptionPane.showMessageDialog(panel, "The account lock failed");
         }
     }
 

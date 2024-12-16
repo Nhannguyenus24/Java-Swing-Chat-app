@@ -101,3 +101,18 @@ CREATE TABLE `User_Activity` (
     `activity_time` DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (`user_id`) REFERENCES `User`(`user_id`) ON DELETE CASCADE
 );
+
+CREATE TABLE Chat (
+    `chat_id` INT AUTO_INCREMENT PRIMARY KEY,
+    `is_group` TINYINT(1) NOT NULL,
+    `chat_name` VARCHAR(255) NOT NULL
+);
+
+ CREATE TABLE Chat_Member (
+    `chat_id` INT NOT NULL,
+    `user_id` INT NOT NULL,
+    `is_admin` TINYINT(1) DEFAULT 0,
+    PRIMARY KEY (`chat_id`, `user_id`),
+    FOREIGN KEY (`chat_id`) REFERENCES `Chat`(`chat_id`) ON DELETE CASCADE,
+    FOREIGN KEY (`user_id`) REFERENCES `User`(`user_id`) ON DELETE CASCADE
+);

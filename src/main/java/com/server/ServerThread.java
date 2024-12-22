@@ -46,23 +46,6 @@ public class ServerThread extends Thread {
         try {
 
             JSONObject json = new JSONObject(message);
-            try {
-                if (json.getString("type").equals("checkStatus")) {
-                    int targetUserId = json.getInt("targetUserId");
-                    boolean isOnline = ServerMain.serverThreadBus.isUserOnline(targetUserId);
-
-                    JSONObject response = new JSONObject();
-                    response.put("type", "statusResponse");
-                    response.put("targetUserId", targetUserId);
-                    response.put("isOnline", isOnline);
-
-                    sendMessage(response.toString());
-                    return;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
             String content = json.getString("content");
             int recipientId = json.getInt("recipientId");
             int senderId = json.getInt("senderId");

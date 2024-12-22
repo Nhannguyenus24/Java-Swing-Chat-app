@@ -10,8 +10,6 @@ import java.sql.SQLException;
 import java.security.SecureRandom;
 import com.user.Services.EmailSender;
 import java.time.LocalDate;
-import java.net.Socket;
-import java.io.*;
 
 public class UserModel {
     public int userID;
@@ -52,10 +50,6 @@ public class UserModel {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
-
-    private void initClient(){
-
     }
 
     public List<UserModel> getFriends() {

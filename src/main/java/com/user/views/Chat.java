@@ -3,7 +3,6 @@ package com.user.views;
 import net.miginfocom.swing.MigLayout;
 
 import com.server.ChatClient;
-import com.server.Client;
 import com.user.models.*;
 
 public class Chat extends javax.swing.JPanel {
@@ -11,13 +10,6 @@ public class Chat extends javax.swing.JPanel {
     public Chat_Body chatBody;
     public ChatModel chat;
     ChatClient client;
-
-    // public Chat(UserModel user, ChatClient client) {
-    //     this.client = client;
-    //     chat = new ChatModel(user);
-    //     initComponents();
-    //     init();
-    // }
 
     public Chat(UserModel user, UserModel friend, ChatClient client) {
         this.client = client;

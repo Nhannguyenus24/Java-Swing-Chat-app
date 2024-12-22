@@ -11,6 +11,7 @@ import javax.swing.*;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.awt.Rectangle;
+import org.json.JSONObject;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -28,24 +29,34 @@ public class Chat_Body extends javax.swing.JPanel {
         // Đăng ký event listener cho ChatClient
         client.addEventListener(new ClientEventListener() {
             public void onMessageReceived(String message) {
-                System.out.println("Message received: " + message);
-                String[] parts = message.split(",,");
-                String content = parts[0];
-                int recipientId = Integer.parseInt(parts[1]);
-                int senderId = Integer.parseInt(parts[2]);
-                String username = parts[3];
-                LocalDateTime time = LocalDateTime.now();
-                
-                chat.content.add(content);
-                chat.timestamp.add(time);
-                chat.is_sender.add(false);
-                chat.sender_name.add(parts[3]);
-                chat.member_id.add(Integer.parseInt(parts[2]));
-                if (chat.is_group)
-                    addItemLeft(content, parts[3], time);
-                else {
-                    addItemLeft(content, "", time);
+                try {
+                    JSONObject json = new JSONObject(message);
+                    String content = json.getString("content");
+                    int recipientId = json.getInt("recipientId");
+                    int senderId = json.getInt("senderId");
+                    String username = json.getString("username");
+                    LocalDateTime time = LocalDateTime.now();
+
+                    // Thêm tin nhắn vào model
+                    chat.content.add(content);
+                    chat.timestamp.add(time);
+                    chat.is_sender.add(false);
+                    chat.sender_name.add(username);
+                    chat.member_id.add(senderId);
+
+                    // Cập nhật giao diện
+                    if (chat.is_group) {
+                        addItemLeft(content, username, time);
+                    } else {
+                        addItemLeft(content, "", time);
+                    }
+
+                } catch (Exception e) {
+                    System.err.println("Error parsing message: " + message);
+                    e.printStackTrace();
                 }
+                body.revalidate();
+                body.repaint();
             }
         });
     }

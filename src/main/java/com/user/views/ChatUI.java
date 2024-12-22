@@ -15,6 +15,7 @@ public class ChatUI extends javax.swing.JFrame {
     public ChatUI(UserModel user, ChatClient client) {
         this.user = user;
         this.client = client;
+        this.setTitle(user.userName);
         initComponents();
         init();
     }

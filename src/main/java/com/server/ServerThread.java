@@ -2,6 +2,7 @@ package com.server;
 
 import java.io.*;
 import java.net.Socket;
+import org.json.JSONObject;
 
 public class ServerThread extends Thread {
 
@@ -29,20 +30,39 @@ public class ServerThread extends Thread {
         } catch (IOException e) {
             System.out.println("Client disconnected: " + userId);
         } finally {
+            ServerMain.serverThreadBus.remove(userId);
+            try {
+                reader.close();
+                writer.close();
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         }
     }
 
     public void handleMessage(String message) {
-        String[] parts = message.split(",,");
-        String content = parts[0];
-        if(content.equals("login")) {
-            userId = Integer.parseInt(parts[1]);
+        try {
+            // Chuyển đổi chuỗi tin nhắn JSON thành JSONObject
+            JSONObject json = new JSONObject(message);
+            String content = json.getString("content");
+            int recipientId = json.getInt("recipientId");
+            int senderId = json.getInt("senderId");
+            String username = json.getString("username");
+
+            if (content.equals("login")) {
+                userId = senderId;
+                ServerMain.serverThreadBus.add(this);
+                System.out.println("User logged in with userId: " + userId);
+            }
+            // Gửi tin nhắn đến người nhận
+            ServerMain.serverThreadBus.sendPrivateMessage(senderId, username, recipientId, content);
+            System.out.println("Message received: " + json.toString());
+        } catch (Exception e) {
+            System.err.println("Failed to handle message: " + message);
+            e.printStackTrace();
         }
-        int recipientId = Integer.parseInt(parts[1]);
-        int senderId = Integer.parseInt(parts[2]);
-        String username = parts[3];
-        ServerMain.serverThreadBus.sendPrivateMessage(senderId, username, recipientId, content);
-        System.out.println("Message received: " + message);
     }
 
     public void sendMessage(String message) {

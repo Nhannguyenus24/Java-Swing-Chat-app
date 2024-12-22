@@ -280,7 +280,7 @@ public class ChatModel {
     }
 
     public List<Integer> getListUserId() {
-        List<Integer> list = new ArrayList();
+        List<Integer> list = new ArrayList<>();
         String query = """
                     SELECT user_id
                     FROM chat_member

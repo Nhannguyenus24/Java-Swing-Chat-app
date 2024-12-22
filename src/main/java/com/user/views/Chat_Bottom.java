@@ -8,7 +8,6 @@ import java.awt.Dimension;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.time.LocalDateTime;
-import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -71,7 +70,7 @@ public class Chat_Bottom extends javax.swing.JPanel {
                     client.sendMessage(text, chat.chat_id, chat.user.userName);
                 } catch (Exception e) {
                     e.printStackTrace();
-                }   
+                }
 
                 txt.setText("");
                 txt.grabFocus();

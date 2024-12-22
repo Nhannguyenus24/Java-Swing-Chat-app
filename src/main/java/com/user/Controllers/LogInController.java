@@ -17,15 +17,16 @@ public class LogInController {
                 JOptionPane.showMessageDialog(null, "Login Successful");
                 int user_id = DatabaseConnection.getUserID(username, password);
                 UserModel user = new UserModel(user_id);
-                ChatClient client = new ChatClient("localhost", 7777, user_id);
+                ChatClient client = new ChatClient("localhost", 7777, user_id, -1);
+                client.sendMessage("login", client.userId, user.userName);
+
                 ChatUI ui = new ChatUI(user, client);
                 ui.setVisible(true);
                 frame.dispose();
             } else {
                 JOptionPane.showMessageDialog(null, "Invalid login credentials", "Error", JOptionPane.ERROR_MESSAGE);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             // TODO: handle exception
         }
     }

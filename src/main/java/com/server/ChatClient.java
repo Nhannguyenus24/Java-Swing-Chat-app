@@ -21,6 +21,18 @@ public class ChatClient {
         this.writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
         new Thread(this::listenToServer).start();
+        checkUserStatus(0);
+    }
+
+    public void checkUserStatus(int targetUserId) throws IOException {
+        JSONObject json = new JSONObject();
+        json.put("type", "checkStatus");
+        json.put("targetUserId", targetUserId);
+        json.put("senderId", userId);
+
+        writer.write(json.toString());
+        writer.newLine();
+        writer.flush();
     }
 
     public void sendMessage(String messageContent, int recipientId, String username, int chat_id) throws IOException {
@@ -49,8 +61,18 @@ public class ChatClient {
 
     public void handleServerMessage(String message) {
         try {
-
             JSONObject json = new JSONObject(message);
+            try {
+                if (json.getString("type").equals("checkStatus")) {
+                    int targetUserId = json.getInt("targetUserId");
+                    boolean isOnline = json.getBoolean("isOnline");
+
+                    System.out.println("User " + targetUserId + " is online: " + isOnline);
+                    return;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             String content = json.getString("content");
             int senderId = json.getInt("senderId");
             int recipientId = json.getInt("recipientId");

@@ -36,10 +36,11 @@ public class RegistrationController {
     private void filterRegistrationsAction(ActionEvent e) {
 
         String keyword = this.registrationPanel.searchField.getText().trim();
+        String email = this.registrationPanel.emailField.getText().trim();
         Date startDate = new Date(((java.util.Date) this.registrationPanel.startDateSpinner.getValue()).getTime());
         Date endDate = new Date(((java.util.Date) this.registrationPanel.endDateSpinner.getValue()).getTime());
 
-        List<Object[]> filteredResults = RegistrationModel.filterRegistrations(keyword, startDate, endDate);
+        List<Object[]> filteredResults = RegistrationModel.filterRegistrations(keyword, email, startDate, endDate);
 
         registrationModel.setRowCount(0);
         for (Object[] row : filteredResults) {

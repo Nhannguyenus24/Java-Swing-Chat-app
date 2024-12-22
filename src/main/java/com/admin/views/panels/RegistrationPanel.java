@@ -8,6 +8,7 @@ public class RegistrationPanel extends JPanel {
     public JTable registrationTable;
     public DefaultTableModel registrationTableModel;
     public JTextField searchField;
+    public JTextField emailField;
     public JButton filterButton;
     public JSpinner startDateSpinner;
     public JSpinner endDateSpinner;
@@ -18,7 +19,7 @@ public class RegistrationPanel extends JPanel {
         this.add(filterPanel, BorderLayout.NORTH);
 
         registrationTableModel = new DefaultTableModel(new Object[][] {},
-                new String[] { "Username", "Full name", "Registration time" });
+                new String[] { "Username", "Full name", "Email", "Registration time" });
         registrationTable = new JTable(registrationTableModel);
         registrationTable.setAutoCreateRowSorter(true);
         this.add(new JScrollPane(registrationTable), BorderLayout.CENTER);
@@ -30,6 +31,10 @@ public class RegistrationPanel extends JPanel {
         panel.add(new JLabel("Filter by name:"));
         searchField = new JTextField(15);
         panel.add(searchField);
+
+        panel.add(new JLabel("Filter by email:"));
+        emailField = new JTextField(15);
+        panel.add(emailField);
 
         panel.add(new JLabel("From date:"));
         startDateSpinner = new JSpinner(new SpinnerDateModel());

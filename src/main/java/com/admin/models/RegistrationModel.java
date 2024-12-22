@@ -11,7 +11,7 @@ public class RegistrationModel {
     public static List<Object[]> getAllRegistrations() {
         List<Object[]> registrations = new ArrayList<>();
         String sql = """
-                    SELECT u.username, u.full_name, u.created_at
+                    SELECT u.username, u.full_name, u.email, u.created_at
                     FROM User u
                     ORDER BY u.created_at DESC
                 """;
@@ -23,6 +23,7 @@ public class RegistrationModel {
                 registrations.add(new Object[] {
                         rs.getString("username"),
                         rs.getString("full_name"),
+                        rs.getString("email"), // Thêm email vào kết quả
                         rs.getTimestamp("created_at")
                 });
             }
@@ -32,12 +33,13 @@ public class RegistrationModel {
         return registrations;
     }
 
-    public static List<Object[]> filterRegistrations(String keyword, Date startDate, Date endDate) {
+    public static List<Object[]> filterRegistrations(String keyword, String email, Date startDate, Date endDate) {
         List<Object[]> results = new ArrayList<>();
         String sql = """
-                    SELECT u.username, u.full_name, u.created_at
+                    SELECT u.username, u.full_name, u.email, u.created_at
                     FROM User u
                     WHERE (u.full_name LIKE ? OR ? IS NULL)
+                    AND (u.email LIKE ? OR ? IS NULL)  -- Thêm điều kiện lọc email
                     AND u.created_at BETWEEN ? AND ?
                     ORDER BY u.created_at DESC
                 """;
@@ -47,14 +49,17 @@ public class RegistrationModel {
 
             stmt.setString(1, "%" + keyword + "%");
             stmt.setString(2, keyword.isEmpty() ? null : keyword);
-            stmt.setDate(3, startDate);
-            stmt.setDate(4, endDate);
+            stmt.setString(3, "%" + email + "%"); // Thêm tham số lọc email
+            stmt.setString(4, email.isEmpty() ? null : email);
+            stmt.setDate(5, startDate);
+            stmt.setDate(6, endDate);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     results.add(new Object[] {
                             rs.getString("username"),
                             rs.getString("full_name"),
+                            rs.getString("email"), // Thêm email vào kết quả
                             rs.getTimestamp("created_at")
                     });
                 }

@@ -46,6 +46,23 @@ public class ServerThread extends Thread {
         try {
 
             JSONObject json = new JSONObject(message);
+            try {
+                if (json.getString("type").equals("checkStatus")) {
+                    int targetUserId = json.getInt("targetUserId");
+                    boolean isOnline = ServerMain.serverThreadBus.isUserOnline(targetUserId);
+
+                    JSONObject response = new JSONObject();
+                    response.put("type", "statusResponse");
+                    response.put("targetUserId", targetUserId);
+                    response.put("isOnline", isOnline);
+
+                    sendMessage(response.toString());
+                    return;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             String content = json.getString("content");
             int recipientId = json.getInt("recipientId");
             int senderId = json.getInt("senderId");
@@ -56,7 +73,8 @@ public class ServerThread extends Thread {
                 System.out.println("User logged in with userId: " + userId);
             }
 
-            ServerMain.serverThreadBus.sendPrivateMessage(senderId, username, recipientId, content, json.getInt("chat_id"));
+            ServerMain.serverThreadBus.sendPrivateMessage(senderId, username, recipientId, content,
+                    json.getInt("chat_id"));
             System.out.println("Message received: " + json.toString());
         } catch (Exception e) {
             System.err.println("Failed to handle message: " + message);

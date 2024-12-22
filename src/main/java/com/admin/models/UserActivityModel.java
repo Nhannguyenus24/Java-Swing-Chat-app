@@ -59,7 +59,7 @@ public class UserActivityModel {
                         COUNT(DISTINCT ua.activity_id) AS total_activities
                     FROM User u
                     LEFT JOIN User_Activity ua ON u.user_id = ua.user_id
-                    WHERE u.username LIKE ? AND ua.activity_time BETWEEN ? AND ?
+                    WHERE u.username LIKE ? AND ua.activity_date BETWEEN ? AND ?
                     GROUP BY u.user_id
                 """;
 
@@ -108,11 +108,11 @@ public class UserActivityModel {
     public static Map<Integer, Integer> getMonthlyUserActivityByYear(int year) {
         Map<Integer, Integer> activityData = new HashMap<>();
         String sql = """
-                SELECT MONTH(ua.activity_time) AS month,
+                SELECT MONTH(ua.activity_date) AS month,
                        COUNT(DISTINCT ua.activity_id) AS total_activities
                 FROM User_Activity ua
-                WHERE YEAR(ua.activity_time) = ?
-                GROUP BY MONTH(ua.activity_time)
+                WHERE YEAR(ua.activity_date) = ?
+                GROUP BY MONTH(ua.activity_date)
                 ORDER BY month;
             """;
 

@@ -19,7 +19,6 @@ public class LogInController {
                 UserModel user = new UserModel(user_id);
                 ChatClient client = new ChatClient("localhost", 7777, user_id);
                 client.sendMessage("login", client.userId, user.userName, -4);
-
                 ChatUI ui = new ChatUI(user, client);
                 ui.setVisible(true);
                 frame.dispose();
@@ -27,7 +26,7 @@ public class LogInController {
                 JOptionPane.showMessageDialog(null, "Invalid login credentials", "Error", JOptionPane.ERROR_MESSAGE);
             }
         } catch (Exception e) {
-            // TODO: handle exception
+            e.printStackTrace();
         }
     }
 }

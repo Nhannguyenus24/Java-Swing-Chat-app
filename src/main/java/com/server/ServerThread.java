@@ -43,8 +43,19 @@ public class ServerThread extends Thread {
     }
 
     public void handleMessage(String message) {
+        System.out.println("Received message: " + message);
         try {
-
+            if (message.startsWith("CHECK_STATUS")) {
+                String[] parts = message.split(" ");
+                int targetUserId = Integer.parseInt(parts[1]);
+                boolean isOnline = ServerMain.serverThreadBus.isUserOnline(targetUserId);
+                if (isOnline) {
+                    sendMessage("ONLINE");
+                } else {
+                    sendMessage("OFFLINE");
+                }
+                return;
+            }
             JSONObject json = new JSONObject(message);
             String content = json.getString("content");
             int recipientId = json.getInt("recipientId");

@@ -1,5 +1,6 @@
 package com.user.views;
 
+import com.server.ChatClient;
 import com.user.models.UserModel;
 
 import java.awt.Dimension;
@@ -9,8 +10,11 @@ import javax.swing.ImageIcon;
 public class ChatUI extends javax.swing.JFrame {
     private Home home;
     UserModel user;
-    public ChatUI(UserModel user) {
+    ChatClient client;
+    
+    public ChatUI(UserModel user, ChatClient client) {
         this.user = user;
+        this.client = client;
         initComponents();
         init();
     }
@@ -34,7 +38,7 @@ public class ChatUI extends javax.swing.JFrame {
         javax.swing.JPanel background = new javax.swing.JPanel();
         javax.swing.JPanel title = new javax.swing.JPanel();
         javax.swing.JLayeredPane body = new javax.swing.JLayeredPane();
-        home = new Home(user);
+        home = new Home(user, client);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -131,17 +135,4 @@ public class ChatUI extends javax.swing.JFrame {
         pY = evt.getY();
     }
 
-//    public static void main(String[] args) {
-//        try {
-//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-//                if ("Nimbus".equals(info.getName())) {
-//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-//                    break;
-//                }
-//            }
-//        }  catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-//            java.util.logging.Logger.getLogger(ChatUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        }
-//        java.awt.EventQueue.invokeLater(() -> new ChatUI(user).setVisible(true));
-//    }
 }

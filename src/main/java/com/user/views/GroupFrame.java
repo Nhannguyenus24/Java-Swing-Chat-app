@@ -1,5 +1,6 @@
 package com.user.views;
 
+import com.server.ChatClient;
 import com.user.models.UserModel;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -19,16 +20,19 @@ public class GroupFrame extends JFrame {
     DefaultListModel<String> leftListModel;
     String groupName;
     Integer id;
-    public GroupFrame(UserModel user) {
+    ChatClient client;
+    public GroupFrame(UserModel user, ChatClient client) {  
         this.user = user;
+        this.client = client;
         setTitle("Group Creation");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(600, 400);
         setLocationRelativeTo(null);
         initCreateGroup();
     }
-    public GroupFrame(UserModel user, Integer id, String group_name) {
+    public GroupFrame(UserModel user, Integer id, String group_name, ChatClient client) {
         this.user = user;
+        this.client = client;
         this.setTitle("Group Setting for admin");
         this.id = id;
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -211,7 +215,7 @@ public class GroupFrame extends JFrame {
             }
         });
         returnChat.addActionListener(e -> {
-            ChatUI chat = new ChatUI(user);
+            ChatUI chat = new ChatUI(user, client);
             chat.setVisible(true);
             chat.setLocationRelativeTo(null);
             this.dispose();
@@ -314,14 +318,14 @@ public class GroupFrame extends JFrame {
                 user.createGroup(groupNameField.getText().trim(), list);
 
                 JOptionPane.showMessageDialog(this, "Group Created Successfully.");
-                ChatUI chat = new ChatUI(user);
+                ChatUI chat = new ChatUI(user, client);
                 chat.setVisible(true);
                 chat.setLocationRelativeTo(null);
                 this.dispose();
             }
         });
         returnChat.addActionListener(e -> {
-            ChatUI chat = new ChatUI(user);
+            ChatUI chat = new ChatUI(user, client);
             chat.setVisible(true);
             chat.setLocationRelativeTo(null);
             this.dispose();

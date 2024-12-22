@@ -1,5 +1,7 @@
 package com.user.views;
 
+import com.server.ChatClient;
+import com.server.ChatClient.ClientEventListener;
 import com.user.models.ChatModel;
 import java.awt.Adjustable;
 import java.awt.Color;
@@ -10,40 +12,63 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.awt.Rectangle;
 
-
 import net.miginfocom.swing.MigLayout;
 
 public class Chat_Body extends javax.swing.JPanel {
     ChatModel chat;
+    ChatClient client;
 
-    public Chat_Body(ChatModel model) {
+    public Chat_Body(ChatModel model, ChatClient client) {
         this.chat = model;
+        this.client = client;
         initComponents();
         init();
         renderChat();
+
+        // Đăng ký event listener cho ChatClient
+        client.addEventListener(new ClientEventListener() {
+            public void onMessageReceived(String message) {
+                System.out.println("Message received: " + message);
+                String[] parts = message.split(",,");
+                String content = parts[0];
+                int recipientId = Integer.parseInt(parts[1]);
+                int senderId = Integer.parseInt(parts[2]);
+                String username = parts[3];
+                LocalDateTime time = LocalDateTime.now();
+                
+                chat.content.add(content);
+                chat.timestamp.add(time);
+                chat.is_sender.add(false);
+                chat.sender_name.add(parts[3]);
+                chat.member_id.add(Integer.parseInt(parts[2]));
+                if (chat.is_group)
+                    addItemLeft(content, parts[3], time);
+                else {
+                    addItemLeft(content, "", time);
+                }
+            }
+        });
     }
 
-    public void renderChat(){
+    public void renderChat() {
         LocalDate previousDate = null;
         Boolean is_group = chat.is_group;
-        for (int i = 0; i < chat.content.size(); i++){
+        for (int i = 0; i < chat.content.size(); i++) {
             String message = chat.content.get(i);
             boolean is_sender = chat.is_sender.get(i);
             LocalDateTime time = chat.timestamp.get(i);
             LocalDate messageDate = time.toLocalDate();
-            if (!messageDate.equals(previousDate)){
+            if (!messageDate.equals(previousDate)) {
                 addDate(messageDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
                 previousDate = messageDate;
             }
-            if (is_sender){
-                    addItemRight(message, time);
-            }
-            else {
-                if (is_group){
+            if (is_sender) {
+                addItemRight(message, time);
+            } else {
+                if (is_group) {
                     String sender_name = chat.sender_name.get(i);
                     addItemLeft(message, sender_name, time);
-                }
-                else
+                } else
                     addItemLeft(message, "", time);
             }
         }
@@ -82,18 +107,21 @@ public class Chat_Body extends javax.swing.JPanel {
         body.repaint();
         body.revalidate();
     }
-    public void deleteItemRight(Chat_Right item){
+
+    public void deleteItemRight(Chat_Right item) {
         body.remove(item);
         removeConsecutiveDates();
         body.repaint();
         body.revalidate();
     }
-    public void deleteItemLeft(Chat_Left item){
+
+    public void deleteItemLeft(Chat_Left item) {
         body.remove(item);
         removeConsecutiveDates();
         body.repaint();
         body.revalidate();
     }
+
     private void removeConsecutiveDates() {
         for (int i = 0; i < body.getComponentCount() - 1; i++) {
             if (body.getComponent(i) instanceof Chat_Date && body.getComponent(i + 1) instanceof Chat_Date) {
@@ -101,6 +129,7 @@ public class Chat_Body extends javax.swing.JPanel {
             }
         }
     }
+
     private void initComponents() {
 
         sp = new javax.swing.JScrollPane();
@@ -114,26 +143,22 @@ public class Chat_Body extends javax.swing.JPanel {
         javax.swing.GroupLayout bodyLayout = new javax.swing.GroupLayout(body);
         body.setLayout(bodyLayout);
         bodyLayout.setHorizontalGroup(
-            bodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 826, Short.MAX_VALUE)
-        );
+                bodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 826, Short.MAX_VALUE));
         bodyLayout.setVerticalGroup(
-            bodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 555, Short.MAX_VALUE)
-        );
+                bodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 555, Short.MAX_VALUE));
 
         sp.setViewportView(body);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(sp)
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(sp));
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(sp)
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(sp));
     }
 
     private void scrollToBottom() {
@@ -178,7 +203,8 @@ public class Chat_Body extends javax.swing.JPanel {
         }
 
         if (!found) {
-            JOptionPane.showMessageDialog(this, "Message not found: " + searchText, "Search", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Message not found: " + searchText, "Search",
+                    JOptionPane.INFORMATION_MESSAGE);
         }
     }
 

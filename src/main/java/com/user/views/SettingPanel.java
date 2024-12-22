@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.user.models.UserModel;
 import com.Main;
+import com.server.ChatClient;
 
 public class SettingPanel extends JFrame {
     UserModel user;
@@ -18,9 +19,10 @@ public class SettingPanel extends JFrame {
     private final Color defaultColor = Color.LIGHT_GRAY;
     private final Color selectedColor = new Color(100, 150, 180);
     private JButton selectedButton;
-
-    public SettingPanel(UserModel user) {
+    ChatClient client;
+    public SettingPanel(UserModel user, ChatClient client) {
         this.user = user;
+        this.client = client;
         this.setTitle("User Management");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(900, 500);
@@ -67,7 +69,7 @@ public class SettingPanel extends JFrame {
         buttonPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         JButton exitButton = createNavButton("Back to chat");
         exitButton.addActionListener(e -> {
-            ChatUI chat = new ChatUI(user);
+            ChatUI chat = new ChatUI(user, client);
             chat.setVisible(true);
             chat.setLocationRelativeTo(null);
             this.dispose();
@@ -100,7 +102,8 @@ public class SettingPanel extends JFrame {
         this.setVisible(true);
     }
 
-    private void showPopupMenu(JList<String> list, int x, int y, DefaultListModel<String> sourceModel, List<UserModel> blockers) {
+    private void showPopupMenu(JList<String> list, int x, int y, DefaultListModel<String> sourceModel,
+            List<UserModel> blockers) {
         JPopupMenu popupMenu = new JPopupMenu();
         JMenuItem moveOption = new JMenuItem("unblock");
         moveOption.addActionListener(e -> {
@@ -172,6 +175,7 @@ public class SettingPanel extends JFrame {
         button.setBackground(selectedColor);
         selectedButton = button;
     }
+
     private JPanel createUserInfoPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
         panel.setBackground(Color.WHITE);
@@ -210,7 +214,7 @@ public class SettingPanel extends JFrame {
         gbc.gridx = 0;
         panel.add(new JLabel("Gender:"), gbc);
         gbc.gridx = 1;
-        JComboBox<String> genderBox = new JComboBox<>(new String[]{"Male", "Female", "Other"});
+        JComboBox<String> genderBox = new JComboBox<>(new String[] { "Male", "Female", "Other" });
         genderBox.setPreferredSize(new Dimension(400, 30));
         panel.add(genderBox, gbc);
 
@@ -225,25 +229,26 @@ public class SettingPanel extends JFrame {
         gbc.gridwidth = 2;
         JButton updateButton = new JButton("Update");
         updateButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-            updateButton.addActionListener(e -> {
-                try {
-                    String username = usernameField.getText();
-                    String fullName = fullNameField.getText();
-                    String address = addressField.getText();
-                    int day = (Integer) ((JSpinner) ((JPanel) panel.getComponent(7)).getComponent(0)).getValue();
-                    int month = (Integer) ((JSpinner) ((JPanel) panel.getComponent(7)).getComponent(2)).getValue();
-                    int year = (Integer) ((JSpinner) ((JPanel) panel.getComponent(7)).getComponent(4)).getValue();
-                    String dob = String.format("%04d-%02d-%02d", year, month, day);
-                    String gender = (String) genderBox.getSelectedItem();
-                    String email = emailField.getText();
+        updateButton.addActionListener(e -> {
+            try {
+                String username = usernameField.getText();
+                String fullName = fullNameField.getText();
+                String address = addressField.getText();
+                int day = (Integer) ((JSpinner) ((JPanel) panel.getComponent(7)).getComponent(0)).getValue();
+                int month = (Integer) ((JSpinner) ((JPanel) panel.getComponent(7)).getComponent(2)).getValue();
+                int year = (Integer) ((JSpinner) ((JPanel) panel.getComponent(7)).getComponent(4)).getValue();
+                String dob = String.format("%04d-%02d-%02d", year, month, day);
+                String gender = (String) genderBox.getSelectedItem();
+                String email = emailField.getText();
 
-                    user.updateUserInfo(user.userID, username, fullName, address, dob, gender, email);
+                user.updateUserInfo(user.userID, username, fullName, address, dob, gender, email);
 
-                    JOptionPane.showMessageDialog(panel, "User information updated successfully.");
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(panel, "Failed to update user information: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            });
+                JOptionPane.showMessageDialog(panel, "User information updated successfully.");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(panel, "Failed to update user information: " + ex.getMessage(), "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        });
         panel.add(updateButton, gbc);
 
         return panel;
@@ -255,7 +260,8 @@ public class SettingPanel extends JFrame {
         datePanel.setBackground(Color.WHITE);
         JSpinner daySpinner = new JSpinner(new SpinnerNumberModel(day, 1, 31, 1));
         JSpinner monthSpinner = new JSpinner(new SpinnerNumberModel(month, 1, 12, 1));
-        JSpinner yearSpinner = new JSpinner(new SpinnerNumberModel(year, 1900, Calendar.getInstance().get(Calendar.YEAR), 1));
+        JSpinner yearSpinner = new JSpinner(
+                new SpinnerNumberModel(year, 1900, Calendar.getInstance().get(Calendar.YEAR), 1));
 
         daySpinner.setPreferredSize(new Dimension(50, 30));
         monthSpinner.setPreferredSize(new Dimension(50, 30));
@@ -273,8 +279,10 @@ public class SettingPanel extends JFrame {
         yearEditor.getTextField().setEditable(false);
         yearEditor.getTextField().setFocusable(false);
 
-        monthSpinner.addChangeListener(e -> updateDaySpinner(daySpinner, (Integer) monthSpinner.getValue(), (Integer) yearSpinner.getValue()));
-        yearSpinner.addChangeListener(e -> updateDaySpinner(daySpinner, (Integer) monthSpinner.getValue(), (Integer) yearSpinner.getValue()));
+        monthSpinner.addChangeListener(
+                e -> updateDaySpinner(daySpinner, (Integer) monthSpinner.getValue(), (Integer) yearSpinner.getValue()));
+        yearSpinner.addChangeListener(
+                e -> updateDaySpinner(daySpinner, (Integer) monthSpinner.getValue(), (Integer) yearSpinner.getValue()));
 
         updateDaySpinner(daySpinner, (Integer) monthSpinner.getValue(), (Integer) yearSpinner.getValue());
 
@@ -286,6 +294,7 @@ public class SettingPanel extends JFrame {
 
         return datePanel;
     }
+
     private void updateDaySpinner(JSpinner daySpinner, int month, int year) {
         int maxDays = getMaxDaysInMonth(month, year);
         ((SpinnerNumberModel) daySpinner.getModel()).setMaximum(maxDays);
@@ -295,6 +304,7 @@ public class SettingPanel extends JFrame {
             daySpinner.setValue(maxDays);
         }
     }
+
     private int getMaxDaysInMonth(int month, int year) {
         return switch (month) {
             case 4, 6, 9, 11 -> 30;
@@ -360,7 +370,8 @@ public class SettingPanel extends JFrame {
             }
 
             if (!newPassword.equals(confirmPassword)) {
-                JOptionPane.showMessageDialog(panel, "New password and confirm password do not match.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(panel, "New password and confirm password do not match.", "Error",
+                        JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -375,7 +386,6 @@ public class SettingPanel extends JFrame {
 
         return panel;
     }
-
 
     private JPasswordField createPasswordField() {
         JPasswordField passwordField = new JPasswordField(20);
@@ -421,8 +431,7 @@ public class SettingPanel extends JFrame {
         generateButton.addActionListener(e -> {
             user.createRandomPassword();
             JOptionPane.showMessageDialog(this, "A new password has been sent to your email.");
-            }
-        );
+        });
 
         gbc.gridx = 0;
         gbc.gridy = 4;

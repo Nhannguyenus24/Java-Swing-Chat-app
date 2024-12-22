@@ -24,14 +24,7 @@ public class UserModel {
     public String gender;
     public String address;
 
-    private Socket clientSocket;
-    private BufferedWriter writer;
-    private BufferedReader reader;
-
-    // Client information
-    private int clientId = -1;
-    private String userId;
-    private List<String> onlineClients;
+ 
 
     public UserModel(int userID) {
         String query= """

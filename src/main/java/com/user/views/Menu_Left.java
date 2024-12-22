@@ -12,6 +12,8 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.Color;
+
+import com.server.ChatClient;
 import com.user.events.EventChat;
 
 public class Menu_Left extends JPanel {
@@ -26,12 +28,16 @@ public class Menu_Left extends JPanel {
     private MenuButton menuMessage;
     private JScrollPane sp;
     private JTextField searchField;
-    public Menu_Left(UserModel user, Home home) {
+    ChatClient client;
+
+    public Menu_Left(UserModel user, Home home, ChatClient client) {
         this.currentAccount = user;
         this.home = home;
+        this.client = client;
         initComponents();
         init();
     }
+
     private void init() {
         sp.setVerticalScrollBar(new ScrollBar());
         menuList.setLayout(new MigLayout("fillx", "0[]0", "0[]0"));
@@ -55,6 +61,7 @@ public class Menu_Left extends JPanel {
             }
         });
     }
+
     private void filterUsers() {
         String searchText = searchField.getText().toLowerCase();
 
@@ -66,8 +73,9 @@ public class Menu_Left extends JPanel {
                     public void onItemClicked(UserModel user) {
                         home.updateChat(user);
                     }
+
                     @Override
-                    public void onItemClicked(Integer groupid){
+                    public void onItemClicked(Integer groupid) {
                         home.updateChat(groupid);
                     }
                 }), "wrap");
@@ -81,19 +89,21 @@ public class Menu_Left extends JPanel {
         menuList.removeAll();
         userAccount = currentAccount.getFriends();
         for (UserModel d : userAccount) {
-            menuList.add(new Item_People(currentAccount, d , "friend", new EventChat() {
+            menuList.add(new Item_People(currentAccount, d, "friend", new EventChat() {
                 @Override
                 public void onItemClicked(UserModel user) {
                     home.updateChat(user);
                 }
+
                 @Override
-                public void onItemClicked(Integer groupid){
+                public void onItemClicked(Integer groupid) {
                     home.updateChat(groupid);
                 }
             }), "wrap");
         }
         refreshMenuList();
     }
+
     private void showGroup() {
         userAccount.clear();
         menuList.removeAll();
@@ -105,14 +115,16 @@ public class Menu_Left extends JPanel {
                 public void onItemClicked(UserModel user) {
                     home.updateChat(user);
                 }
+
                 @Override
-                public void onItemClicked(Integer groupid){
+                public void onItemClicked(Integer groupid) {
                     home.updateChat(groupid);
                 }
             }), "wrap");
         }
         refreshMenuList();
     }
+
     private void showNotification() {
         userAccount.clear();
         menuList.removeAll();
@@ -122,6 +134,7 @@ public class Menu_Left extends JPanel {
         }
         refreshMenuList();
     }
+
     private void showPublic() {
         userAccount.clear();
         menuList.removeAll();
@@ -131,10 +144,12 @@ public class Menu_Left extends JPanel {
         }
         refreshMenuList();
     }
+
     private void refreshMenuList() {
         menuList.repaint();
         menuList.revalidate();
     }
+
     private void initComponents() {
         JLayeredPane menu = new JLayeredPane();
         menuMessage = new MenuButton();
@@ -156,7 +171,7 @@ public class Menu_Left extends JPanel {
         settingsIcon.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent evt) {
-                SettingPanel settingsPage = new SettingPanel(currentAccount);
+                SettingPanel settingsPage = new SettingPanel(currentAccount, client);
                 settingsPage.setVisible(true);
                 settingsPage.setLocationRelativeTo(null);
                 Window window = SwingUtilities.getWindowAncestor(settingsIcon);
@@ -180,7 +195,7 @@ public class Menu_Left extends JPanel {
         groupIcon.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent evt) {
-                GroupFrame group = new GroupFrame(currentAccount);
+                GroupFrame group = new GroupFrame(currentAccount, client);
                 group.setVisible(true);
                 group.setLocationRelativeTo(null);
                 Window window = SwingUtilities.getWindowAncestor(groupIcon);
@@ -191,7 +206,6 @@ public class Menu_Left extends JPanel {
         });
         groupPanel.add(groupLabel, BorderLayout.WEST);
         groupPanel.add(groupIcon, BorderLayout.EAST);
-
 
         searchField = new JTextField();
         searchField.setPreferredSize(new Dimension(200, 30));
@@ -242,12 +256,10 @@ public class Menu_Left extends JPanel {
         menuList.setLayout(menuListLayout);
         menuListLayout.setHorizontalGroup(
                 menuListLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addGap(0, 0, Short.MAX_VALUE)
-        );
+                        .addGap(0, 0, Short.MAX_VALUE));
         menuListLayout.setVerticalGroup(
                 menuListLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addGap(0, 576, Short.MAX_VALUE)
-        );
+                        .addGap(0, 576, Short.MAX_VALUE));
 
         sp.setViewportView(menuList);
 
@@ -265,9 +277,10 @@ public class Menu_Left extends JPanel {
                                 .addContainerGap()
                                 .addComponent(sp)
                                 .addContainerGap())
-                        .addComponent(groupPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addComponent(topPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-        );
+                        .addComponent(groupPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+                                GroupLayout.PREFERRED_SIZE)
+                        .addComponent(topPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+                                GroupLayout.PREFERRED_SIZE));
         layout.setVerticalGroup(
                 layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
@@ -279,10 +292,9 @@ public class Menu_Left extends JPanel {
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(groupPanel, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
                                 .addGap(5)
-                                .addComponent(topPanel, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
-                                )
-        );
+                                .addComponent(topPanel, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)));
     }
+
     private void menuMessageActionPerformed() {
         if (!menuMessage.isSelected()) {
             currentTab = "friend";
@@ -327,17 +339,19 @@ public class Menu_Left extends JPanel {
         }
     }
 
-
     public static class MenuButton extends JButton {
         private boolean selected = false;
+
         public void setSelected(boolean value) {
             selected = value;
             repaint();
         }
+
         public MenuButton() {
             setContentAreaFilled(false);
             setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         }
+
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);

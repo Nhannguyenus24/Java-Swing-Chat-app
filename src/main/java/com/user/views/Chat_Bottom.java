@@ -1,5 +1,6 @@
 package com.user.views;
 
+import com.server.ChatClient;
 import com.user.models.ChatModel;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -7,6 +8,8 @@ import java.awt.Dimension;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.time.LocalDateTime;
+import java.util.List;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -17,9 +20,12 @@ import net.miginfocom.swing.MigLayout;
 public class Chat_Bottom extends javax.swing.JPanel {
     ChatModel chat;
     private Chat_Body chatBody;
-    public Chat_Bottom(ChatModel chat, Chat_Body chatBody) {
+    ChatClient client;
+
+    public Chat_Bottom(ChatModel chat, Chat_Body chatBody, ChatClient client) {
         this.chat = chat;
         this.chatBody = chatBody;
+        this.client = client;
         initComponents();
         init();
     }
@@ -54,10 +60,19 @@ public class Chat_Bottom extends javax.swing.JPanel {
         cmd.setContentAreaFilled(false);
         cmd.setCursor(new Cursor(Cursor.HAND_CURSOR));
         cmd.setIcon(new ImageIcon(getClass().getResource("/icon/send.png")));
+
         cmd.addActionListener(ae -> {
             String text = txt.getText().trim();
             if (!text.isEmpty()) {
                 chat.sendMessage(text);
+                System.out.println("Message sent: " + text);
+
+                try {
+                    client.sendMessage(text, chat.chat_id, chat.user.userName);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }   
+
                 txt.setText("");
                 txt.grabFocus();
                 chatBody.addItemRight(text, LocalDateTime.now());
@@ -78,12 +93,10 @@ public class Chat_Bottom extends javax.swing.JPanel {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 400, Short.MAX_VALUE));
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 40, Short.MAX_VALUE)
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 40, Short.MAX_VALUE));
     }
 }

@@ -1,5 +1,6 @@
 package com.user.views;
 
+import com.server.ChatClient;
 import com.user.models.UserModel;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -10,13 +11,15 @@ import java.awt.event.MouseEvent;
 public class Menu_Right extends javax.swing.JPanel {
     UserModel user;
     Home home;
-    public Menu_Right(UserModel user, Home home) {
+    ChatClient client;
+
+    public Menu_Right(UserModel user, Home home, ChatClient client) {
         this.user = user;
         this.home = home;
+        this.client = client;
         if (home.init) {
             initComponents();
-        }
-        else {
+        } else {
             setBackground(new java.awt.Color(249, 249, 249));
         }
     }
@@ -78,7 +81,8 @@ public class Menu_Right extends javax.swing.JPanel {
             groupButton.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent evt) {
-                    GroupFrame group = new GroupFrame(user, home.chat.chatBody.chat.chat_id, home.chat.chatBody.chat.chat_name);
+                    GroupFrame group = new GroupFrame(user, home.chat.chatBody.chat.chat_id,
+                            home.chat.chatBody.chat.chat_name, client);
                     group.setVisible(true);
                     group.setLocationRelativeTo(null);
                     Window window = SwingUtilities.getWindowAncestor(groupButton);
@@ -101,10 +105,9 @@ public class Menu_Right extends javax.swing.JPanel {
         });
         searchButton.addActionListener(e -> {
             String text = searchField.getText();
-            if(text.trim().isEmpty()){
+            if (text.trim().isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Please enter a valid message.");
-            }
-            else{
+            } else {
                 home.chat.chatBody.moveToMessage(text.trim());
             }
         });

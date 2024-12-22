@@ -20,15 +20,22 @@ public class RegisterController {
             return;
         }
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        dateFormat.setLenient(false);
+        SimpleDateFormat inputDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        inputDateFormat.setLenient(false);
+
+        System.out.println(dob);
+
         try {
-            Date parsedDate = dateFormat.parse(dob);
-            dob = dateFormat.format(parsedDate); // Direct assignment
+            Date parsedDate = inputDateFormat.parse(dob);
+
+            SimpleDateFormat outputDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            dob = outputDateFormat.format(parsedDate);
+
         } catch (ParseException e) {
             JOptionPane.showMessageDialog(null, "Invalid date format. Please use DD/MM/YYYY.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
+
 
         boolean isRegistered = DatabaseConnection.registerUser(fullName, username, address, email, dob, password, gender);
         if (isRegistered) {

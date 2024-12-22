@@ -31,8 +31,7 @@ public class UserActivityPanel extends JPanel {
         this.add(filterAndControlPanel, BorderLayout.NORTH);
 
         userTableModel = new DefaultTableModel(new Object[][] {},
-                new String[] { "Username", "Creation time", "Number of app openings", "Number of people chatted with",
-                        "Number of groups chatted in", "Total activity count" });
+                new String[] { "Username", "Creation time", "Number of app openings" });
 
         userTable = new JTable(userTableModel);
         userTable.setAutoCreateRowSorter(true);

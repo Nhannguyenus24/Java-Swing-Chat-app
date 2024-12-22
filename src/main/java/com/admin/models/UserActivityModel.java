@@ -8,6 +8,7 @@ import java.util.Map;
 
 public class UserActivityModel {
 
+    // Lấy danh sách tất cả các hoạt động đăng nhập của người dùng
     public static List<Object[]> getAllUserActivities() {
         List<Object[]> userActivities = new ArrayList<>();
         String sql = """
@@ -15,12 +16,9 @@ public class UserActivityModel {
                         u.username,
                         u.full_name,
                         u.created_at,
-                        COUNT(CASE WHEN ua.activity_type = 'app open' THEN 1 END) AS app_open_count,
-                        COUNT(CASE WHEN ua.activity_type = 'chat' THEN 1 END) AS chat_count,
-                        COUNT(CASE WHEN ua.activity_type = 'group join' THEN 1 END) AS group_join_count,
-                        COUNT(DISTINCT ua.activity_id) AS total_activities
+                        COUNT(lh.login_time) AS login_count
                     FROM User u
-                    LEFT JOIN User_Activity ua ON u.user_id = ua.user_id
+                    LEFT JOIN login_history lh ON u.user_id = lh.user_id
                     GROUP BY u.user_id
                     ORDER BY u.username
                 """;
@@ -33,10 +31,7 @@ public class UserActivityModel {
                 userActivities.add(new Object[] {
                         rs.getString("username"),
                         rs.getTimestamp("created_at"),
-                        rs.getInt("app_open_count"),
-                        rs.getInt("chat_count"),
-                        rs.getInt("group_join_count"),
-                        rs.getInt("total_activities")
+                        rs.getInt("login_count")
                 });
             }
         } catch (SQLException e) {
@@ -45,7 +40,8 @@ public class UserActivityModel {
         return userActivities;
     }
 
-    public static List<Object[]> filterUserActivity(String name, String startDate, String endDate, int activityCount,
+    // Lọc hoạt động người dùng dựa trên số lần đăng nhập
+    public static List<Object[]> filterUserActivity(String name, String startDate, String endDate, int loginCount,
             String comparison) {
         List<Object[]> userActivities = new ArrayList<>();
         String baseSql = """
@@ -53,26 +49,23 @@ public class UserActivityModel {
                         u.username,
                         u.full_name,
                         u.created_at,
-                        COUNT(CASE WHEN ua.activity_type = 'app open' THEN 1 END) AS app_open_count,
-                        COUNT(CASE WHEN ua.activity_type = 'chat' THEN 1 END) AS chat_count,
-                        COUNT(CASE WHEN ua.activity_type = 'group join' THEN 1 END) AS group_join_count,
-                        COUNT(DISTINCT ua.activity_id) AS total_activities
+                        COUNT(lh.login_time) AS login_count
                     FROM User u
-                    LEFT JOIN User_Activity ua ON u.user_id = ua.user_id
-                    WHERE u.username LIKE ? AND ua.activity_date BETWEEN ? AND ?
+                    LEFT JOIN login_history lh ON u.user_id = lh.user_id
+                    WHERE u.username LIKE ? AND lh.login_time BETWEEN ? AND ?
                     GROUP BY u.user_id
                 """;
 
         String sql = baseSql;
         switch (comparison) {
             case "=":
-                sql += " HAVING total_activities = ?";
+                sql += " HAVING login_count = ?";
                 break;
             case "<":
-                sql += " HAVING total_activities < ?";
+                sql += " HAVING login_count < ?";
                 break;
             case ">":
-                sql += " HAVING total_activities > ?";
+                sql += " HAVING login_count > ?";
                 break;
             default:
                 throw new IllegalArgumentException("Invalid comparison operator: " + comparison);
@@ -85,17 +78,14 @@ public class UserActivityModel {
             stmt.setString(1, "%" + name + "%");
             stmt.setString(2, startDate);
             stmt.setString(3, endDate);
-            stmt.setInt(4, activityCount);
+            stmt.setInt(4, loginCount);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     userActivities.add(new Object[] {
                             rs.getString("username"),
                             rs.getTimestamp("created_at"),
-                            rs.getInt("app_open_count"),
-                            rs.getInt("chat_count"),
-                            rs.getInt("group_join_count"),
-                            rs.getInt("total_activities")
+                            rs.getInt("login_count")
                     });
                 }
             }
@@ -105,16 +95,17 @@ public class UserActivityModel {
         return userActivities;
     }
 
+    // Lấy dữ liệu hoạt động theo tháng cho năm cụ thể chỉ tính số lần đăng nhập
     public static Map<Integer, Integer> getMonthlyUserActivityByYear(int year) {
         Map<Integer, Integer> activityData = new HashMap<>();
         String sql = """
-                SELECT MONTH(ua.activity_date) AS month,
-                       COUNT(DISTINCT ua.activity_id) AS total_activities
-                FROM User_Activity ua
-                WHERE YEAR(ua.activity_date) = ?
-                GROUP BY MONTH(ua.activity_date)
-                ORDER BY month;
-            """;
+                    SELECT MONTH(lh.login_time) AS month,
+                           COUNT(lh.login_time) AS login_count
+                    FROM login_history lh
+                    WHERE YEAR(lh.login_time) = ?
+                    GROUP BY MONTH(lh.login_time)
+                    ORDER BY month;
+                """;
 
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -125,7 +116,7 @@ public class UserActivityModel {
                 while (rs.next()) {
                     activityData.put(
                             rs.getInt("month"),
-                            rs.getInt("total_activities"));
+                            rs.getInt("login_count"));
                 }
             }
         } catch (SQLException e) {

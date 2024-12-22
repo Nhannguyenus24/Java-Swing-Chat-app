@@ -11,8 +11,7 @@ public class GroupModel {
         String sql = """
                     SELECT
                         c.chat_name AS group_name,
-                        COUNT(cm.user_id) AS member_count,
-                        c.created_at
+                        COUNT(cm.user_id) AS member_count
                     FROM chat c
                     LEFT JOIN chat_member cm ON c.chat_id = cm.chat_id
                     WHERE c.is_group = 1
@@ -21,13 +20,12 @@ public class GroupModel {
                 """;
 
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 groups.add(new Object[] {
                         rs.getString("group_name"),
                         rs.getInt("member_count"),
-                        rs.getTimestamp("created_at") // Lấy thời gian tạo từ bảng
                 });
             }
         } catch (SQLException e) {
@@ -41,8 +39,7 @@ public class GroupModel {
         String sql = """
                     SELECT
                         c.chat_name AS group_name,
-                        COUNT(cm.user_id) AS member_count,
-                        c.created_at
+                        COUNT(cm.user_id) AS member_count
                     FROM chat c
                     LEFT JOIN chat_member cm ON c.chat_id = cm.chat_id
                     WHERE c.is_group = 1 AND c.chat_name LIKE ?
@@ -51,14 +48,13 @@ public class GroupModel {
                 """;
 
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, "%" + keyword + "%");
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     groups.add(new Object[] {
                             rs.getString("group_name"),
                             rs.getInt("member_count"),
-                            rs.getTimestamp("created_at") // Lấy thời gian tạo từ bảng
                     });
                 }
             }
@@ -86,7 +82,7 @@ public class GroupModel {
                 """;
 
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, groupName);
 
             try (ResultSet rs = stmt.executeQuery()) {
@@ -126,7 +122,7 @@ public class GroupModel {
                 """;
 
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, groupName);
 
             try (ResultSet rs = stmt.executeQuery()) {

@@ -30,7 +30,6 @@ CREATE TABLE `chat` (
   `chat_id` int NOT NULL AUTO_INCREMENT,
   `is_group` tinyint(1) NOT NULL,
   `chat_name` varchar(255) NOT NULL,
-  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`chat_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;

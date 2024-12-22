@@ -21,7 +21,7 @@ public class ChatGroupPanel extends JPanel {
         this.add(searchPanel, BorderLayout.NORTH);
 
         groupTableModel = new DefaultTableModel(new Object[][] {},
-                new String[] {"Group name", "Number of members", "Creation time"});
+                new String[] {"Group name", "Number of members"});
 
         groupTable = new JTable(groupTableModel);
         groupTable.setAutoCreateRowSorter(true);

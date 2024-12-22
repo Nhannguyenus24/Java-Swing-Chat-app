@@ -22,8 +22,6 @@ public class UserModel {
     public String gender;
     public String address;
 
- 
-
     public UserModel(int userID) {
         String query= """
             SELECT user_id, username, email, status, is_admin, full_name, dob, gender, address
@@ -205,12 +203,7 @@ public class UserModel {
              PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, this.userID);
             statement.setInt(2, recipientUserID);
-            int rowsInserted = statement.executeUpdate();
-            if (rowsInserted > 0) {
-                System.out.println("Friend request sent successfully.");
-            } else {
-                System.out.println("No rows were inserted. The request might already exist or failed.");
-            }
+            statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -450,10 +443,7 @@ public class UserModel {
             int rowsAffected = statement.executeUpdate();
 
             if (rowsAffected > 0) {
-                System.out.println("Password updated successfully to: " + password);
                 EmailSender.sendEmail("YOUR NEW PASSWORD FROM CHATAPP", "This is your new random password: " + password, this.email);
-            } else {
-                System.out.println("Failed to update password.");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -629,6 +619,38 @@ public class UserModel {
 
             statement.setInt(1, chatID);
             statement.setInt(2, user);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void outGroup(Integer chatID) {
+        String query = """
+            DELETE FROM chat_member 
+            WHERE chat_id = ? AND user_id = ?
+        """;
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setInt(1, chatID);
+            statement.setInt(2, this.userID);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void reportSpam(Integer friendId){
+        String query = """
+           INSERT INTO spam_reports (user_id, reason)
+           VALUES (?, ?)
+        """;
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setInt(1, friendId);
+            statement.setString(2, "spam message");
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

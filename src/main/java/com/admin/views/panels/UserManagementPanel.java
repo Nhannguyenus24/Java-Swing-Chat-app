@@ -28,7 +28,7 @@ public class UserManagementPanel extends JPanel {
         this.add(searchPanel, BorderLayout.NORTH);
 
         model = new DefaultTableModel(new Object[][] {},
-                new String[] { "Username", "Full name", "Address", "Date of birth", "Gender", "Email", "Status" });
+                new String[] { "Username", "Full name", "Address", "Date of birth", "Gender", "Email"});
 
         userTable = new JTable(model);
         userTable.setAutoCreateRowSorter(true);
@@ -41,7 +41,7 @@ public class UserManagementPanel extends JPanel {
     private JPanel createSearchPanel() {
         JPanel panel = new JPanel(new FlowLayout());
 
-        String[] searchCriteria = { "Username", "Full name", "Status" };
+        String[] searchCriteria = { "Username", "Full name"};
         searchCriteriaComboBox = new JComboBox<>(searchCriteria);
         panel.add(new JLabel("Select search criteria:"));
         panel.add(searchCriteriaComboBox);

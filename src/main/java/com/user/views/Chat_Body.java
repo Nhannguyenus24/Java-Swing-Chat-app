@@ -21,11 +21,10 @@ public class Chat_Body extends javax.swing.JPanel {
 
     public Chat_Body(ChatModel model, ChatClient client) {
         this.chat = model;
-        this.client = client;
         initComponents();
         init();
         renderChat();
-
+        this.client = client;
         // Đăng ký event listener cho ChatClient
         client.addEventListener(new ClientEventListener() {
             public void onMessageReceived(String message) {
@@ -107,10 +106,10 @@ public class Chat_Body extends javax.swing.JPanel {
     public void addItemRight(String text, LocalDateTime time) {
         Chat_Right item = new Chat_Right(chat, this);
         item.setText(text);
+        item.setTime(time);
         body.add(item, "wrap, al right, w 100::80%");
         body.repaint();
         body.revalidate();
-        item.setTime(time);
         scrollToBottom();
     }
 

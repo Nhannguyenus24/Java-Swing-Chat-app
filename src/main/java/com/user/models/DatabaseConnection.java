@@ -23,11 +23,11 @@ public class DatabaseConnection {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         boolean isValid = false;
-
+        Integer userId = -1;
         try {
             connection = getConnection();
 
-            String sql = "SELECT * FROM user WHERE username = ? AND password = ?";
+            String sql = "SELECT user_id FROM user WHERE username = ? AND password = ?";
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, password);
@@ -35,6 +35,7 @@ public class DatabaseConnection {
             resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
+                userId = resultSet.getInt("user_id");
                 isValid = true;
             }
         } catch (SQLException e) {
@@ -44,6 +45,19 @@ public class DatabaseConnection {
                 if (resultSet != null) resultSet.close();
                 if (preparedStatement != null) preparedStatement.close();
                 if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        if (isValid){
+            String query = "INSERT INTO login_history (user_id) VALUES (?)";
+
+            try {
+                connection = getConnection();
+                preparedStatement = connection.prepareStatement(query);
+                preparedStatement.setInt(1, userId);
+
+                preparedStatement.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
             }

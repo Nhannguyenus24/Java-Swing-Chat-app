@@ -9,9 +9,12 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Font;
+import java.io.IOException;
+
 import com.user.models.UserModel;
 import javax.swing.*;
 import com.user.events.EventChat;
+
 public class Item_People extends JPanel {
 
     private final UserModel account;
@@ -104,14 +107,7 @@ public class Item_People extends JPanel {
         lbStatus.setForeground(new java.awt.Color(117, 117, 117));
         switch (status) {
             case "friend":
-                if (user.status) {
-                    lbStatus.setText("online");
-                    lbStatus.setForeground(Color.GREEN);
-                }
-                else {
-                    lbStatus.setText("offline");
-                    lbStatus.setForeground(Color.GRAY);
-                }
+                lbStatus.setText("friend");
                 break;
             case "group":
                 lbStatus.setText("group");

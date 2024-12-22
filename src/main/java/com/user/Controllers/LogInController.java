@@ -18,6 +18,7 @@ public class LogInController {
                 int user_id = DatabaseConnection.getUserID(username, password);
                 UserModel user = new UserModel(user_id);
                 ChatClient client = new ChatClient("localhost", 7777, user_id);
+
                 ChatUI ui = new ChatUI(user, client);
                 ui.setVisible(true);
                 frame.dispose();

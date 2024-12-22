@@ -7,6 +7,7 @@ import java.awt.event.MouseEvent;
 import java.util.Calendar;
 import java.util.List;
 
+import com.admin.views.AdminDashboard;
 import com.user.models.UserModel;
 import com.Main;
 import com.server.ChatClient;
@@ -79,7 +80,10 @@ public class SettingPanel extends JFrame {
         buttonPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         if (user.isAdmin) {
             JButton adminButton = createNavButton("Admin mode");
-            adminButton.addActionListener(e -> this.dispose());
+            adminButton.addActionListener(e -> {
+                new AdminDashboard();
+                this.dispose();
+            });
             buttonPanel.add(adminButton);
             buttonPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         }

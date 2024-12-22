@@ -68,29 +68,54 @@ public class Menu_Right extends javax.swing.JPanel {
         gbc.gridx = 0;
         gbc.gridy = 6;
         add(deleteAllButton, gbc);
-        if (home.chat.chat.is_group && user.isAdminGroup(home.chat.chat.chat_id)) {
-            JLabel groupLabel = new JLabel("Setting group:");
+        if (home.chat.chat.is_group) {
+            JButton outButton = new JButton("Out group");
             gbc.gridx = 0;
             gbc.gridy = 7;
-            add(groupLabel, gbc);
-
-            JButton groupButton = new JButton("Setting");
-            gbc.gridx = 0;
-            gbc.gridy = 8;
-            add(groupButton, gbc);
-            groupButton.addMouseListener(new MouseAdapter() {
+            add(outButton, gbc);
+            outButton.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent evt) {
-                    GroupFrame group = new GroupFrame(user, home.chat.chatBody.chat.chat_id,
-                            home.chat.chatBody.chat.chat_name, client);
-                    group.setVisible(true);
-                    group.setLocationRelativeTo(null);
-                    Window window = SwingUtilities.getWindowAncestor(groupButton);
-                    if (window != null) {
-                        window.dispose();
+                    int response = JOptionPane.showConfirmDialog(
+                            null,
+                            "Are you want to out group?",
+                            "Confirm",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.QUESTION_MESSAGE
+                    );
+
+                    // In ra kết quả
+                    if (response == JOptionPane.YES_OPTION) {
+                        user.outGroup(home.chat.chatBody.chat.chat_id);
+                        home = new Home(home.user, home.client);
+                        home.revalidate();
                     }
                 }
             });
+            if (user.isAdminGroup(home.chat.chat.chat_id)) {
+                JLabel groupLabel = new JLabel("Setting group:");
+                gbc.gridx = 0;
+                gbc.gridy = 8;
+                add(groupLabel, gbc);
+
+                JButton groupButton = new JButton("Setting");
+                gbc.gridx = 0;
+                gbc.gridy = 9;
+                add(groupButton, gbc);
+                groupButton.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent evt) {
+                        GroupFrame group = new GroupFrame(user, home.chat.chatBody.chat.chat_id,
+                                home.chat.chatBody.chat.chat_name, client);
+                        group.setVisible(true);
+                        group.setLocationRelativeTo(null);
+                        Window window = SwingUtilities.getWindowAncestor(groupButton);
+                        if (window != null) {
+                            window.dispose();
+                        }
+                    }
+                });
+            }
         }
         deleteAllButton.addActionListener(e -> {
             int confirm = JOptionPane.showConfirmDialog(null,
@@ -109,6 +134,28 @@ public class Menu_Right extends javax.swing.JPanel {
                 JOptionPane.showMessageDialog(null, "Please enter a valid message.");
             } else {
                 home.chat.chatBody.moveToMessage(text.trim());
+            }
+        });
+
+        spamButton.addActionListener(e -> {
+            int response = JOptionPane.showConfirmDialog(
+                    null,
+                    "Are you want to report this user?",
+                    "Confirm",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE
+            );
+
+            if (response == JOptionPane.YES_OPTION) {
+                home.chat.chatBody.chat.getListUserId().forEach(id -> {
+                    user.reportSpam(id);
+                });
+                JOptionPane.showMessageDialog(
+                        null,
+                        "User has been reported",
+                        "Notification",
+                        JOptionPane.INFORMATION_MESSAGE
+                );
             }
         });
     }

@@ -36,6 +36,14 @@ public class ServerThreadBus {
     }
 
     public boolean isUserOnline(int userId) {
-        return serverThreads.stream().anyMatch(thread -> userId == thread.getUserId());
+        System.out.println("Checking if user is online: " + userId);
+        synchronized (serverThreads) {
+            for (ServerThread thread : serverThreads) {
+                if (thread.getUserId() == userId) {
+                    return true; // User is online
+                }
+            }
+            return false; // User is not online
+        }
     }
 }

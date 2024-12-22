@@ -1,3 +1,2 @@
 drop database user_management;
-source script.sql;
-source inserting_value.sql;
+source structure_with_data.sql;

@@ -284,11 +284,12 @@ public class ChatModel {
         String query = """
                     SELECT user_id
                     FROM chat_member
-                    WHERE chat_id = ?
+                    WHERE chat_id = ? AND user_id != ?
                 """;
         try (Connection connection = DatabaseConnection.getConnection();
                 PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, chat_id);
+            statement.setInt(2, user.userID);
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     list.add(resultSet.getInt("user_id"));

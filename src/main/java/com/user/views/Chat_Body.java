@@ -34,9 +34,13 @@ public class Chat_Body extends javax.swing.JPanel {
                     String content = json.getString("content");
                     int recipientId = json.getInt("recipientId");
                     int senderId = json.getInt("senderId");
+                    int chat_id = json.getInt("chat_id");
                     String username = json.getString("username");
                     LocalDateTime time = LocalDateTime.now();
 
+                    if (chat_id != chat.chat_id) {
+                        return;
+                    }
                     // Thêm tin nhắn vào model
                     chat.content.add(content);
                     chat.timestamp.add(time);
@@ -50,13 +54,12 @@ public class Chat_Body extends javax.swing.JPanel {
                     } else {
                         addItemLeft(content, "", time);
                     }
+                    scrollToBottom();
 
                 } catch (Exception e) {
                     System.err.println("Error parsing message: " + message);
                     e.printStackTrace();
                 }
-                body.revalidate();
-                body.repaint();
             }
         });
     }

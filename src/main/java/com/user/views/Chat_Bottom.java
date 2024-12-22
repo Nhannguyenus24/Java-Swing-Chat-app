@@ -14,6 +14,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
+import java.util.List;
 import net.miginfocom.swing.MigLayout;
 
 public class Chat_Bottom extends javax.swing.JPanel {
@@ -66,11 +67,13 @@ public class Chat_Bottom extends javax.swing.JPanel {
                 chat.sendMessage(text);
                 System.out.println("Message sent: " + text);
 
-                try {
-                    client.sendMessage(text, chat.chat_id, chat.user.userName);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                chat.getListUserId().forEach(id -> {
+                    try {
+                        client.sendMessage(text, id, chat.user.userName, chat.chat_id);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
 
                 txt.setText("");
                 txt.grabFocus();

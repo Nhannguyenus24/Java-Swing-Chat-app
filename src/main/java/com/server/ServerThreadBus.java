@@ -2,9 +2,7 @@ package com.server;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.json.JSONObject;
 
@@ -21,17 +19,15 @@ public class ServerThreadBus {
         serverThreads.removeIf(thread -> thread.getUserId() != 0 && thread.getUserId() == userId);
     }
 
-    public void sendPrivateMessage(int senderId, String username, int recipientId, String messageContent) {
+    public void sendPrivateMessage(int senderId, String username, int recipientId, String messageContent, int chat_id) {
         for (ServerThread thread : serverThreads) {
-            if (thread.getUserId() == recipientId) {
-                // Tạo JSON object chứa tin nhắn
+            if (thread.userId == recipientId) {
                 JSONObject json = new JSONObject();
                 json.put("content", messageContent);
                 json.put("recipientId", recipientId);
                 json.put("senderId", senderId);
                 json.put("username", username);
-
-                // Gửi tin nhắn JSON
+                json.put("chat_id", chat_id);
                 thread.sendMessage(json.toString());
                 return;
             }

@@ -44,7 +44,7 @@ public class ServerThread extends Thread {
 
     public void handleMessage(String message) {
         try {
-            // Chuyển đổi chuỗi tin nhắn JSON thành JSONObject
+
             JSONObject json = new JSONObject(message);
             String content = json.getString("content");
             int recipientId = json.getInt("recipientId");
@@ -53,11 +53,10 @@ public class ServerThread extends Thread {
 
             if (content.equals("login")) {
                 userId = senderId;
-                ServerMain.serverThreadBus.add(this);
                 System.out.println("User logged in with userId: " + userId);
             }
-            // Gửi tin nhắn đến người nhận
-            ServerMain.serverThreadBus.sendPrivateMessage(senderId, username, recipientId, content);
+
+            ServerMain.serverThreadBus.sendPrivateMessage(senderId, username, recipientId, content, json.getInt("chat_id"));
             System.out.println("Message received: " + json.toString());
         } catch (Exception e) {
             System.err.println("Failed to handle message: " + message);
